@@ -1,7 +1,11 @@
 var socket = io.connect('http://localhost:5000');
 
+var count=0;
+
 socket.on('entrance', function (data) {
-    document.write('<p>' + data.message + '</p>');
+    count++;
+    console.log(count);
+    document.write('<p>' + data.message + count + '</p>');
 
 
 });

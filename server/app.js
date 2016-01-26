@@ -16,8 +16,8 @@ var port = process.env.PORT || 5000;
 var room = io.listen(server);
 
 room.on('connection', function(socket){
-    var count = 0;
-    room.sockets.emit('entrance', {message: 'a new person has entered.'});
+
+    room.sockets.emit('entrance', {message: 'person'});
 
 });
 
