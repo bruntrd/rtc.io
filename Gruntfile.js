@@ -8,11 +8,11 @@ module.exports = function(grunt) {
             build: {
                 src: 'client/scripts/main.js',
                 dest: 'server/public/assets/scripts/main.min.js'
+            },
+            controllers: {
+                src: "client/scripts/controllers/controller.js",
+                dest: "server/public/assets/scripts/controllers/controller.min.js"
             }
-            //controllers: {
-            //    src: "client/scripts/controllers/controller.js",
-            //    dest: "server/public/assets/scripts/controllers/controller.min.js"
-            //}
         },
         copy: {
             angular: {
@@ -73,6 +73,9 @@ module.exports = function(grunt) {
                 expand: true,
                 cwd: "client",
                 src: [
+                    "views/routes/home.html",
+                    "views/routes/lobby.html",
+                    "views/routes/videochat.html"
                 ],
                 dest: "server/public/assets/"
             },
@@ -88,7 +91,9 @@ module.exports = function(grunt) {
                 expand: true,
                 cwd: "node_modules/",
                 src: [
-                    "bootstrap/dist/css/bootstrap.min.css"
+                    "bootstrap/dist/css/bootstrap.min.css.map",
+                    "bootstrap/dist/css/bootstrap.min.css",
+                    "bootstrap/dist/js/bootstrap.min.js"
                 ],
                 "dest": "server/public/vendors/"
             }

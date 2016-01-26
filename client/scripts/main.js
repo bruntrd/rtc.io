@@ -1,52 +1,24 @@
-var socket = io.connect('http://localhost:5000');
+var myApp = angular.module('myApp', ['ngRoute', 'appControllers']);
 
-var count=0;
+var appControllers= angular.module('appControllers', []);
 
-socket.on('entrance', function (data) {
-    count++;
-    console.log(count);
-    document.write('<p>' + data.message + count + '</p>');
+myApp.config(['$routeProvider', function($routeProvider){
+    $routeProvider.
+    when('/home', {
+        templateUrl: "/assets/views/routes/home.html",
+        controller: "HomeController"
+    }).
+    when('/lobby', {
+        templateUrl: "/assets/views/routes/lobby.html",
+        controller: "LobbyController"
+    }).
+    when('/videochat', {
+        templateUrl: "/assets/views/routes/videochat.html",
+        controller: "VideoChatController"
+    }).
+    otherwise({
+        redirectTo: "/home"
+    });
 
+}]);
 
-});
-
-//// Set RTC options.
-//var rtcOpts = {
-//    room: 'test-room',
-//    signaller: 'https://switchboard.rtc.io'
-//};
-//// call RTC module
-//var rtc = RTC(rtcOpts);
-//// A div element to show our local video stream
-//var localVideo = document.getElementById('l-video');
-//// A div element to show our remote video streams
-//var remoteVideo = document.getElementById('r-video');
-//// A contenteditable element to show our messages
-//var messageWindow = document.getElementById('messages');
-//
-//// Bind to events happening on the data channel
-//function bindDataChannelEvents(id, channel, attributes, connection) {
-//
-//    // Receive message
-//    channel.onmessage = function (evt) {
-//        messageWindow.innerHTML = evt.data;
-//    };
-//
-//    // Send message
-//    messageWindow.onkeyup = function () {
-//        channel.send(this.innerHTML);
-//    };
-//}
-//
-//// Start working with the established session
-//function init(session) {
-//    session.createDataChannel('chat');
-//    session.on('channel:opened:chat', bindDataChannelEvents);
-//}
-//
-//// Display local and remote video streams
-//localVideo.appendChild(rtc.local);
-//remoteVideo.appendChild(rtc.remote);
-//
-//// Detect when RTC has established a session
-//rtc.on('ready', init);

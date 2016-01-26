@@ -1,0 +1,55 @@
+<div>
+    <p>welcome to the lobby</p>
+    <button ng-click = 'callFunction()'><a href="#videochat">make a call</a></button>
+    <button id="loginButton" class="btn btn-primary" width="40px" data-toggle="modal" data-target="#loginModal">Login</button>
+    <div class="modal fade" id="loginModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span>
+                        <span class="sr-only">Close</span>
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">Choose which option (order) you would like to be</h4>
+                </div>
+
+                <!-- Modal Body -->
+                <div class="modal-body">
+
+                    <form class="form-horizontal" role="form" id="messageForm">
+                        <div class="form-group">
+                            <label  class="col-sm-2 control-label">Option</label>
+                            <div class="col-sm-10">
+                                <div class="dropdown">
+                                    <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Dropdown Example
+                                        <span class="caret"></span></button>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="#">HTML</a></li>
+                                        <li><a href="#">CSS</a></li>
+                                        <li><a href="#">JavaScript</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Message</label>
+                            <div class="col-sm-10">
+                                <input id="messageContainer"  maxlength="150" ng-model="contact.message"  type="text" class="form-control" placeholder="message"/>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <!-- Modal Footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">
+                        Forget this
+                    </button>
+                    <button type="button" class="btn btn-primary" ng-click ="addMessage(contact)" data-dismiss="modal">
+                        Sending it
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

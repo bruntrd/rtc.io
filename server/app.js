@@ -14,10 +14,37 @@ var port = process.env.PORT || 5000;
 // create primus ws
 //var primus = new Primus(server, { transformer: 'websockets', parser: 'JSON'});
 var room = io.listen(server);
-
+var connectedList = [];
+function person(option, id){
+    this.option = option;
+    this.id = id;
+}
 room.on('connection', function(socket){
+    room.sockets.emit('entrance', {message: 'welcome to the lobby'});
 
-    room.sockets.emit('entrance', {message: 'person'});
+    socket.on('login', function(data){
+
+        var connectedPerson = new person(data.option, socket.id);
+        connectedList.push(connectedPerson);
+        console.log(connectedList);
+    });
+
+    socket.on('disconnect', function(){
+        room.sockets.emit('exit', {message: 'someone has left'});
+    });
+
+    socket.on('call', function (data) {
+        for (var i=0; i<=connectedList.length-1; i++){
+        console.log('person 1 ' + connectedList[i].option);
+            if (connectedList[i].option == "option1"){
+                var id = connectedList[i].id
+                console.log(id);
+                console.log('something');
+                room.to(id).emit('invite', {link: '#VideoChat'})
+            }
+        }
+        room.sockets.emit('call', {message: '# ' + data.call})
+    });
 
 });
 
