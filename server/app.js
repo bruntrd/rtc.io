@@ -5,7 +5,7 @@ var index = require('./routes/index');
 var Primus = require('primus.io');
 var io = require('socket.io');
 var connect = require('connect');
-
+var replify = require('replify');
 
 app.use('/', index);
 
@@ -15,16 +15,27 @@ var port = process.env.PORT || 5000;
 //var primus = new Primus(server, { transformer: 'websockets', parser: 'JSON'});
 var room = io.listen(server);
 var connectedList = [];
-function person(option, id){
-    this.option = option;
-    this.id = id;
-}
+var arraySorter = function(array, string, sortAscending) {
+    if(sortAscending == undefined) sortAscending = true;
+
+    if(sortAscending) {
+        array.sort(function (a, b) {
+            return a[string] > b[string];
+        });
+    }
+    else {
+        array.sort(function (a, b) {
+            return a[string] < b[string];
+        });
+    }
+};
 room.on('connection', function(socket){
+    var optionArray = [];
     room.sockets.emit('entrance', {message: 'welcome to the lobby'});
 
     socket.on('login', function(data){
 
-        var connectedPerson = new person(data.option, socket.id);
+        var connectedPerson = ({'option': data.option, 'id':socket.id});
         connectedList.push(connectedPerson);
         console.log(connectedList);
     });
@@ -34,28 +45,71 @@ room.on('connection', function(socket){
     });
 
     socket.on('call', function (data) {
+        arraySorter(connectedList, 'option', true);
+        console.log('after sort' + connectedList);
+
         for (var i=0; i<=connectedList.length-1; i++){
-        console.log('person 1 ' + connectedList[i].option);
+            console.log(connectedList[i].option);
             if (connectedList[i].option == "option1"){
-                var id = connectedList[i].id
+                var id = connectedList[i].id;
                 console.log(id);
                 console.log('something');
                 room.to(id).emit('invite', {link: '#VideoChat'})
             }
+            else if(connectedList[i].option == "option2"){
+                var id = connectedList[i].id;
+                console.log(id);
+                console.log('something');
+                room.to(id).emit('invite', {link: '#VideoChat'})
+            }
+            else if(connectedList[i].option == "option3"){
+                var id = connectedList[i].id;
+                console.log(id);
+                console.log('something');
+                room.to(id).emit('invite', {link: '#VideoChat'})
+            }
+            else if(connectedList[i].option == "option4"){
+                var id = connectedList[i].id;
+                console.log(id);
+                console.log('something');
+                room.to(id).emit('invite', {link: '#VideoChat'})
+            }
+            else if(connectedList[i].option == "option5"){
+                var id = connectedList[i].id;
+                console.log(id);
+                console.log('something');
+                room.to(id).emit('invite', {link: '#VideoChat'})
+            }
+            else if(connectedList[i].option == "option6"){
+                var id = connectedList[i].id;
+                console.log(id);
+                console.log('something');
+                room.to(id).emit('invite', {link: '#VideoChat'})
+            }
+            else {
+                console.log('must be the kiosk');
+            }
         }
-        room.sockets.emit('call', {message: '# ' + data.call})
+        //room.sockets.emit('call', {message: '# ' + data.call})
     });
+    socket.on('getOptions', function(){
+        optionArray=[];
+        for (var i=0; i<=connectedList.length-1; i++){
+            optionArray.push(connectedList[i].option);
+        }
+        socket.emit('optionArray', {array: optionArray});
+    })
 
 });
 
-// create the switchboard
-//var switchboard = require('rtc-switchboard')(server);
+//create the switchboard
+var switchboard = require('rtc-switchboard')(server);
 
-// we need to expose the primus library
-//app.get('/rtc.io/primus.js', switchboard.library());
-
-
-
+//// we need to expose the primus library
+//app.get(Primus, switchboard.library());
+//
+//
+//
 //replify({
 //    name: 'switchboard',
 //    app: switchboard,
@@ -63,19 +117,19 @@ room.on('connection', function(socket){
 //        server: server
 //    }
 //});
+//
+switchboard.on('room:create', function(room) {
+    console.log('room ' + room + ' created, now have ' + switchboard.rooms.length + ' active rooms');
+});
 
-//switchboard.on('room:create', function(room) {
-//    console.log('room ' + room + ' created, now have ' + switchboard.rooms.length + ' active rooms');
-//});
-//
-//switchboard.on('room:destroy', function(room) {
-//    console.log('room ' + room + ' destroyed, ' + switchboard.rooms.length + ' active rooms remain');
-//
-//    if (typeof gc == 'function') {
-//        console.log('gc');
-//        gc();
-//    }
-//});
+switchboard.on('room:destroy', function(room) {
+    console.log('room ' + room + ' destroyed, ' + switchboard.rooms.length + ' active rooms remain');
+
+    if (typeof gc == 'function') {
+        console.log('gc');
+        gc();
+    }
+});
 server.listen(port, function(err) {
     if (err) {
         return;

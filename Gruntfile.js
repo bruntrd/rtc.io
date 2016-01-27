@@ -87,9 +87,17 @@ module.exports = function(grunt) {
                 ],
                 "dest": "server/public/assets"
             },
+            primus: {
+                expand: true,
+                cwd: "node_modules",
+                src: [
+                    "primus/dist/primus.js"
+                ],
+                "dest": "server/public/vendors/"
+            },
             bootstrap: {
                 expand: true,
-                cwd: "node_modules/",
+                cwd: "node_modules",
                 src: [
                     "bootstrap/dist/css/bootstrap.min.css.map",
                     "bootstrap/dist/css/bootstrap.min.css",

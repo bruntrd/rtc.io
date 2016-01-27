@@ -1,55 +1,83 @@
-<div>
-    <p>welcome to the lobby</p>
-    <button ng-click = 'callFunction()'><a href="#videochat">make a call</a></button>
-    <button id="loginButton" class="btn btn-primary" width="40px" data-toggle="modal" data-target="#loginModal">Login</button>
-    <div class="modal fade" id="loginModal" tabindex="-1" role="dialog">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <!-- Modal Header -->
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">
-                        <span aria-hidden="true">&times;</span>
-                        <span class="sr-only">Close</span>
-                    </button>
-                    <h4 class="modal-title" id="myModalLabel">Choose which option (order) you would like to be</h4>
-                </div>
+<div class="row">
+    <div class="col-md-1"></div>
+        <div class="col-md-11">
+        <h1>Welcome to Virtual Receptionist</h1>
+        <!--What The Kiosk will see-->
+        <!--<button ng-click = 'kioskLogin()' ng-show="kiosk">Kiosk Click Here</button>-->
+        <!--<div ng-hide = "kiosk" class="row">-->
+            <!--<div class="row kiosk">-->
+                <!--<div class="col-md-2">-->
 
-                <!-- Modal Body -->
-                <div class="modal-body">
+                <!--</div>-->
+                <!--<div class="col-md-10">-->
+                    <!--<h3>Welcome to virtual Receptionist</h3>-->
+                    <!--<button ng-click = 'callFunction()'><a href="#videochat">Make a Call</a></button>-->
+                <!--</div>-->
+            <!--</div>-->
+        <!--</div>-->
 
-                    <form class="form-horizontal" role="form" id="messageForm">
-                        <div class="form-group">
-                            <label  class="col-sm-2 control-label">Option</label>
-                            <div class="col-sm-10">
-                                <div class="dropdown">
-                                    <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Dropdown Example
-                                        <span class="caret"></span></button>
-                                    <ul class="dropdown-menu">
-                                        <li><a href="#">HTML</a></li>
-                                        <li><a href="#">CSS</a></li>
-                                        <li><a href="#">JavaScript</a></li>
-                                    </ul>
+        <div ng-hide="loggedIn" class="row">
+            <button id="loginButton" ng-mouseover="getOptions()" class="btn btn-primary" width="40px" data-toggle="modal" data-target="#loginModal" ng-click="getOptions()">Login</button>
+            <div class="modal fade" id="loginModal" tabindex="-1" role="dialog">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <!-- Modal Header -->
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">
+                                <span aria-hidden="true">&times;</span>
+                                <span class="sr-only">Close</span>
+                            </button>
+                            <h4 class="modal-title" id="myModalLabel">Choose which option (order) you would like to be</h4>
+                        </div>
+
+                        <!-- Modal Body -->
+                        <div class="modal-body">
+
+                            <form class="form-horizontal" role="form" id="messageForm">
+                                <div class="form-group">
+                                    <label  class="col-sm-1 control-label"></label>
+                                    <div class="col-sm-9">
+                                        <div class="form-group">
+                                            <label for="sel1">Select which option you would  (select one):</label>
+                                            <select class="form-control" id="sel1" ng-model="option">
+                                                <option ng-repeat="option in options">{{option}}</option>
+                                            </select>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
+
+                            </form>
                         </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label">Message</label>
-                            <div class="col-sm-10">
-                                <input id="messageContainer"  maxlength="150" ng-model="contact.message"  type="text" class="form-control" placeholder="message"/>
-                            </div>
+                        <!-- Modal Footer -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">
+                                Exit Option Selecter
+                            </button>
+                            <button type="button" class="btn btn-primary" ng-click ="loginFunction(option)" data-dismiss="modal">
+                                Choose this order
+                            </button>
                         </div>
-                    </form>
-                </div>
-                <!-- Modal Footer -->
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">
-                        Forget this
-                    </button>
-                    <button type="button" class="btn btn-primary" ng-click ="addMessage(contact)" data-dismiss="modal">
-                        Sending it
-                    </button>
+                    </div>
                 </div>
             </div>
         </div>
+        <div ng-show="kiosk" class="row">
+            <div class="col-md-1"></div>
+            <div class="col-md-10">
+                <button ng-click="callFunction()"><a href="#videochat">Click here to speak with someone</a></button>
+            </div>
+            <div class="col-md-1"></div>
+        </div>
+        <div ng-show="user" class="row">
+            <div class="col-md-1"></div>
+            <div class="col-md-10">
+                <h2>You are logged in as {{option}}</h2>
+                <h2>Wait here for a call</h2>
+                <div class="appendCallLink">Link goes here</div>
+            </div>
+            <div class="col-md-1"></div>
+        </div>
     </div>
+
 </div>
+
