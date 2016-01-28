@@ -19,6 +19,7 @@
     "grunt-contrib-copy": "^0.8.2",
     "grunt-contrib-uglify": "^0.11.0",
     "jquery": "^2.2.0",
+    "ng-audio": "0.0.2",
     "primus.io": "^3.2.0",
     "replify": "^1.2.0",
     "rtc": "^3.3.0",

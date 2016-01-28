@@ -1,5 +1,9 @@
-myApp.controller('HomeController', ['$scope', function($scope){
+myApp.controller('HomeController', ['$scope', function($scope,ngAudio){
     console.log('home controller');
+    $scope.sound = function() {
+        var audio = ngAudio.load("http://static1.grsites.com/archive/sounds/birds/birds007.wav");
+        audio.play();
+    }
 
 }]);
 myApp.controller('LobbyController', ['$scope', function($scope){
@@ -12,7 +16,6 @@ myApp.controller('LobbyController', ['$scope', function($scope){
     $scope.options=['kiosk', 'option1', 'option2', 'option3', 'option4', 'option5', 'option6'];
     $scope.newArray=[];
     $scope.loggedIn = false;
-
     $scope.quickFunction = function(){
         console.log('before this?');
     };

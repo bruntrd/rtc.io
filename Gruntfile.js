@@ -20,7 +20,8 @@ module.exports = function(grunt) {
                 cwd: 'node_modules',
                 src: [
                     "angular/angular.min.js",
-                    "angular/angular.min.js.map"
+                    "angular/angular.min.js.map",
+                    "angular/angular.js"
 
                 ],
                 "dest": "server/public/vendors/"
@@ -44,7 +45,6 @@ module.exports = function(grunt) {
                 ],
                 "dest": "server/public/vendors/"
             },
-
             jquery: {
                 expand: true,
                 cwd: 'node_modules',
@@ -104,6 +104,16 @@ module.exports = function(grunt) {
                     "bootstrap/dist/js/bootstrap.min.js"
                 ],
                 "dest": "server/public/vendors/"
+            },
+            ngaudio: {
+                expand: true,
+                cwd: "node_modules",
+                src: [
+                    "ng-audio/dist/ng-audio.min.js",
+                    "ng-audio/dist/css/ng-audio.min.css"
+                ],
+                "dest": "server/public/vendors/"
+
             }
         }
     });

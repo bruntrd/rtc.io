@@ -15,6 +15,7 @@ var port = process.env.PORT || 5000;
 //var primus = new Primus(server, { transformer: 'websockets', parser: 'JSON'});
 var room = io.listen(server);
 var connectedList = [];
+var i;
 var arraySorter = function(array, string, sortAscending) {
     if(sortAscending == undefined) sortAscending = true;
 
@@ -28,6 +29,56 @@ var arraySorter = function(array, string, sortAscending) {
             return a[string] < b[string];
         });
     }
+};
+var sendCall = function(){
+    //for (var i=0; i<=connectedList.length-1; i++){
+        console.log(connectedList[i].option);
+        if (connectedList[i].option == "option1"){
+            var id = connectedList[i].id;
+            console.log(id);
+            console.log('something');
+            room.to(id).emit('invite', {link: '#VideoChat'})
+        }
+        else if(connectedList[i].option == "option2"){
+            var id = connectedList[i].id;
+            console.log(id);
+            console.log('something');
+            room.to(id).emit('invite', {link: '#VideoChat'})
+        }
+        else if(connectedList[i].option == "option3"){
+            var id = connectedList[i].id;
+            console.log(id);
+            console.log('something');
+            room.to(id).emit('invite', {link: '#VideoChat'})
+        }
+        else if(connectedList[i].option == "option4"){
+            var id = connectedList[i].id;
+            console.log(id);
+            console.log('something');
+            room.to(id).emit('invite', {link: '#VideoChat'})
+        }
+        else if(connectedList[i].option == "option5"){
+            var id = connectedList[i].id;
+            console.log(id);
+            console.log('something');
+            room.to(id).emit('invite', {link: '#VideoChat'})
+        }
+        else if(connectedList[i].option == "option6"){
+            var id = connectedList[i].id;
+            console.log(id);
+            console.log('something');
+            room.to(id).emit('invite', {link: '#VideoChat'})
+        }
+        else {
+            console.log('must be the kiosk');
+        }
+
+    i++;
+    console.log(i);
+    if(i < connectedList.length) {
+        setTimeout(sendCall, 7000);
+    }
+
 };
 room.on('connection', function(socket){
     var optionArray = [];
@@ -47,55 +98,16 @@ room.on('connection', function(socket){
     socket.on('call', function (data) {
         arraySorter(connectedList, 'option', true);
         console.log('after sort' + connectedList);
+        i = 0;
+        sendCall();
 
-        for (var i=0; i<=connectedList.length-1; i++){
-            console.log(connectedList[i].option);
-            if (connectedList[i].option == "option1"){
-                var id = connectedList[i].id;
-                console.log(id);
-                console.log('something');
-                room.to(id).emit('invite', {link: '#VideoChat'})
-            }
-            else if(connectedList[i].option == "option2"){
-                var id = connectedList[i].id;
-                console.log(id);
-                console.log('something');
-                room.to(id).emit('invite', {link: '#VideoChat'})
-            }
-            else if(connectedList[i].option == "option3"){
-                var id = connectedList[i].id;
-                console.log(id);
-                console.log('something');
-                room.to(id).emit('invite', {link: '#VideoChat'})
-            }
-            else if(connectedList[i].option == "option4"){
-                var id = connectedList[i].id;
-                console.log(id);
-                console.log('something');
-                room.to(id).emit('invite', {link: '#VideoChat'})
-            }
-            else if(connectedList[i].option == "option5"){
-                var id = connectedList[i].id;
-                console.log(id);
-                console.log('something');
-                room.to(id).emit('invite', {link: '#VideoChat'})
-            }
-            else if(connectedList[i].option == "option6"){
-                var id = connectedList[i].id;
-                console.log(id);
-                console.log('something');
-                room.to(id).emit('invite', {link: '#VideoChat'})
-            }
-            else {
-                console.log('must be the kiosk');
-            }
-        }
+
         //room.sockets.emit('call', {message: '# ' + data.call})
     });
     socket.on('getOptions', function(){
         optionArray=[];
-        for (var i=0; i<=connectedList.length-1; i++){
-            optionArray.push(connectedList[i].option);
+        for (var j=0; j<=connectedList.length-1; j++){
+            optionArray.push(connectedList[j].option);
         }
         socket.emit('optionArray', {array: optionArray});
     })
