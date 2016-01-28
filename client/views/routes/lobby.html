@@ -1,21 +1,10 @@
 <div class="row">
+    <button ng-click="someFunction()">play</button>
     <div class="col-md-1"></div>
         <div class="col-md-11">
-        <h1>Welcome to Virtual Receptionist</h1>
-        <!--What The Kiosk will see-->
-        <!--<button ng-click = 'kioskLogin()' ng-show="kiosk">Kiosk Click Here</button>-->
-        <!--<div ng-hide = "kiosk" class="row">-->
-            <!--<div class="row kiosk">-->
-                <!--<div class="col-md-2">-->
-
-                <!--</div>-->
-                <!--<div class="col-md-10">-->
-                    <!--<h3>Welcome to virtual Receptionist</h3>-->
-                    <!--<button ng-click = 'callFunction()'><a href="#videochat">Make a Call</a></button>-->
-                <!--</div>-->
-            <!--</div>-->
-        <!--</div>-->
-
+            <div class="header">
+                <p class="header">Welcome to AVI's Virtual Receptionist</p>
+            </div>
         <div ng-hide="loggedIn" class="row">
             <button id="loginButton" ng-mouseover="getOptions()" class="btn btn-primary" width="40px" data-toggle="modal" data-target="#loginModal" ng-click="getOptions()">Login</button>
             <div class="modal fade" id="loginModal" tabindex="-1" role="dialog">
@@ -38,7 +27,7 @@
                                     <label  class="col-sm-1 control-label"></label>
                                     <div class="col-sm-9">
                                         <div class="form-group">
-                                            <label for="sel1">Select which option you would  (select one):</label>
+                                            <label for="sel1">Select your call option:</label>
                                             <select class="form-control" id="sel1" ng-model="option">
                                                 <option ng-repeat="option in options">{{option}}</option>
                                             </select>
@@ -64,20 +53,37 @@
         <div ng-show="kiosk" class="row">
             <div class="col-md-1"></div>
             <div class="col-md-10">
-                <button ng-click="callFunction()"><a href="#videochat">Click here to speak with someone</a></button>
+                <h2>Click the AVI image to reach someone</h2>
+                <a href="#videochat"><div ng-click="callFunction()" class="aviImg">
+                    <img src="/assets/styles/aviLogo.png" width="400px" height="400px">
+
+                </div></a>
+                <!--<button id="makeCall" class="btn btn-primary" ng-click="callFunction()"><a href="#videochat" ><p style="color: white;">Click here to speak with someone</p></a></button>-->
             </div>
             <div class="col-md-1"></div>
+
+
         </div>
+
         <div ng-show="user" class="row">
             <div class="col-md-1"></div>
             <div class="col-md-10">
                 <h2>You are logged in as {{option}}</h2>
-                <h2>Wait here for a call</h2>
+                <h3>If a call is coming in, a link will appear below, lick to answer.</h3>
                 <div class="appendCallLink">Link goes here</div>
+                <div class="aviImg">
+                    <img src="/assets/styles/aviLogo.png" width="400px" height="400px">
+
+                </div>
             </div>
             <div class="col-md-1"></div>
         </div>
     </div>
+    <div ng-hide="user || kiosk" class="aviImg">
+        <img src="/assets/styles/aviLogo.png" width="400px" height="400px">
+
+    </div>
+
 
 </div>
 

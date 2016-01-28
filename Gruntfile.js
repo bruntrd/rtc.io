@@ -36,6 +36,14 @@ module.exports = function(grunt) {
                 ],
                 "dest": "server/public/vendors/"
             },
+            angularaudio: {
+                expand: true,
+                cwd: 'bower_components',
+                src: [
+                    "angular-audio/app/angular.audio.js"
+                ],
+                "dest": "server/public/vendors/"
+            },
             rtc: {
                 expand: true,
                 cwd: 'node_modules',
