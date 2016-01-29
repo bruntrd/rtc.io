@@ -7,22 +7,19 @@ myApp.controller('LobbyController', ['$scope','ngAudio', function($scope,ngAudio
     $scope.option = '';
     $scope.kiosk = false;
     $scope.user = false;
-    $scope.options=['kiosk', 'option1', 'option2', 'option3', 'option4', 'option5', 'option6'];
+    $scope.options=['visitor', 'option1', 'option2', 'option3', 'option4', 'option5', 'option6'];
     $scope.newArray=[];
     $scope.loggedIn = false;
-    $scope.quickFunction = function(){
-        console.log('before this?');
-    };
-    $scope.someFunction = function(){
-        $scope.audio = ngAudio.load('http://www.soundjay.com/phone/sounds/telephone-ring-03a.mp3');
-        $scope.audio.play();
-    };
+    $scope.link = false;
+    $scope.unavailable = false;
+    $scope.i = 0;
+    $scope.answered = false;
+
     //Socket Events
     socket.on('optionArray', function(data){
         console.log(data);
         $scope.newArray =[];
         $scope.newArray = data.array;
-        //console.log($scope.newArray);
         for(var i=0; i < $scope.options.length;i++){
             for(var j=0; j < $scope.newArray.length; j++){
                 if ($scope.options[i] == $scope.newArray[j]){
@@ -31,50 +28,74 @@ myApp.controller('LobbyController', ['$scope','ngAudio', function($scope,ngAudio
                 }
             }
         }
-        console.log('does it happen to late');
     });
     socket.on('entrance', function (data) {
         //console.log('person has entered');
     });
-    socket.on('exit', function (data){
-        //console.log('someone has left');
-    });
     socket.on('call', function (data){
         console.log('a call has been made');
-        var whatevs = $("<div>").css("color", "black").text(data.message);
-        $("body").append
+        //var whatevs = $("<div>").css("color", "black").text(data.message);
+        //$("body").append
     });
     socket.on('invite', function(data){
         console.log('you have been invited' + data.link);
-        var invite = $("<div><button ng-click='receivingCall()'><a href ='#videochat'>Click here to join</a></button></div>");
-        $("body").append(invite);
+        $scope.incomingCall();
+        $scope.soundFunction();
+        //var invite = $("<div><button ng-click='receivingCall()'><a href ='#videochat'>Click here to join</a></button></div>");
+        //$("body").append(invite);
     });
-
+    socket.on('accepted', function(data){
+        $scope.acceptedFunction();
+    });
+    socket.on('unavailable', function(data){
+        $scope.unavailable = !scope.unavailable;
+    });
+    socket.on('exit', function (data){
+        //console.log('someone has left');
+    });
     //Functions
+    $scope.soundFunction = function(){
+        $scope.i++;
+        $scope.audio = ngAudio.load('http://www.soundjay.com/phone/sounds/telephone-ring-03a.mp3');
+        $scope.audio.play();
+        console.log('ring ' + $scope.i);
+        if ($scope.i < 4 && $scope.answered == false){
+            setTimeout($scope.soundFunction, 6000);
+        }
+        else if($scope.i>=4 && $scope.answered == false){
+            console.log($scope.option);
+            socket.emit('noAnswer', {option: $scope.option});
+            $scope.i = 0;
+            $scope.link = false;
+        }
+    };
+    $scope.incomingCall = function(soundFunction){
+        $scope.link = true;
+    };
     $scope.receivingCall = function(){
         console.log('i am taking the call');
         socket.emit('callAccepted');
-
     };
     $scope.kioskLogin = function(){
         $scope.getOptions();
         $scope.kiosk = !$scope.kiosk;
     };
-    $scope.acceptedCall = function(){
-        socket.emit('call', {connected: true});
+    $scope.acceptedFunction = function(){
+        $scope.link=false;
+        $scope.answered = true;
     };
     $scope.getOptions = function(){
         socket.emit('getOptions');
     };
 
     $scope.callFunction = function(){
-        socket.emit('call', {call: 'call has been made'});
+        socket.emit('call', {call: $scope.option});
     };
     $scope.loginFunction = function(option){
         console.log(option);
         $scope.loggedIn = !$scope.loggedIn;
         socket.emit('login', {option: option});
-        if (option == "kiosk"){
+        if (option == "visitor"){
             $scope.kiosk = !$scope.kiosk;
         } else{
             $scope.user = !$scope.user;

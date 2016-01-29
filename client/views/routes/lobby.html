@@ -1,12 +1,11 @@
 <div class="row">
-    <button ng-click="someFunction()">play</button>
     <div class="col-md-1"></div>
         <div class="col-md-11">
             <div class="header">
                 <p class="header">Welcome to AVI's Virtual Receptionist</p>
             </div>
         <div ng-hide="loggedIn" class="row">
-            <button id="loginButton" ng-mouseover="getOptions()" class="btn btn-primary" width="40px" data-toggle="modal" data-target="#loginModal" ng-click="getOptions()">Login</button>
+            <button id="loginButton" ng-mouseover="getOptions()" ng-click="getOptions()" class="btn btn-primary" width="40px" data-toggle="modal" data-target="#loginModal">Login</button>
             <div class="modal fade" id="loginModal" tabindex="-1" role="dialog">
                 <div class="modal-dialog">
                     <div class="modal-content">
@@ -58,11 +57,12 @@
                     <img src="/assets/styles/aviLogo.png" width="400px" height="400px">
 
                 </div></a>
+                <div ng-show="kiosk && unavailable">
+                    <h3>I'm sorry, there is no one available to take your call</h3>
+                </div>
                 <!--<button id="makeCall" class="btn btn-primary" ng-click="callFunction()"><a href="#videochat" ><p style="color: white;">Click here to speak with someone</p></a></button>-->
             </div>
             <div class="col-md-1"></div>
-
-
         </div>
 
         <div ng-show="user" class="row">
@@ -70,7 +70,9 @@
             <div class="col-md-10">
                 <h2>You are logged in as {{option}}</h2>
                 <h3>If a call is coming in, a link will appear below, lick to answer.</h3>
-                <div class="appendCallLink">Link goes here</div>
+                <div ng-show="user && link" class="appendCallLink">
+                   <a href="#videochat"><button ng-click="receivingCall()">Accept Incoming Call!</button></a>
+                </div>
                 <div class="aviImg">
                     <img src="/assets/styles/aviLogo.png" width="400px" height="400px">
 
@@ -81,7 +83,6 @@
     </div>
     <div ng-hide="user || kiosk" class="aviImg">
         <img src="/assets/styles/aviLogo.png" width="400px" height="400px">
-
     </div>
 
 

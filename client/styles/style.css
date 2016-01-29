@@ -30,10 +30,11 @@ body{
     right: 50%;
 }
 #l-video{
-    height:400px;
-    width:400px;
+
 }
 #r-video{
-    height:800px;
-    width:800px;
+}
+
+.local{
+    padding-bottom:20px;
 }
