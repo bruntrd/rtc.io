@@ -29,12 +29,79 @@ body{
     left: 50%;
     right: 50%;
 }
-#l-video{
+/*#l-video{*/
 
+/*}*/
+/*#r-video{*/
+/*}*/
+
+/*.local{*/
+    /*padding-bottom:20px;*/
+/*}*/
+.container {
+    width: 100%;
 }
-#r-video{
+
+.footer{
+    text-align: center;
+    margin-top: 20px;
+}
+
+.jumbotron{
+    margin-bottom: 0px;
+}
+
+img{
+    border: solid 1px;
+    width: 100%;
+}
+
+.fullsz{
+    width: 100%;
+}
+
+.txtarea{
+    outline:none;
+    border:solid 1px #BBB;
+    font-size:15px;
+    margin-top: 10px;
+    height: 150px;
+    background-color: #fff;
+    margin-bottom: 10px;
+    overflow: scroll;
+    overflow-x: hidden;
 }
 
 .local{
-    padding-bottom:20px;
+    margin-top: 10px;
+}
+
+.video{
+    background-color: black;
+}
+
+/* Css For Big Devices */
+
+@media screen and (min-width:768px) {
+    body {
+        padding-top: 55px;
+
+    }
+
+    .remote{
+        width: 85%;
+    }
+
+    .local{
+        margin-top: 0px;
+    }
+
+    #remoteimg{
+        border: solid 1px;
+        width: 85%;
+    }
+
+    .jumbotron{
+        margin-top: -45px;
+    }
 }

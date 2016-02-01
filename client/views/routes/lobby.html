@@ -50,40 +50,24 @@
             </div>
         </div>
         <div ng-show="kiosk" class="row">
-            <div class="col-md-1"></div>
-            <div class="col-md-10">
-                <h2>Click the AVI image to reach someone</h2>
-                <a href="#videochat"><div ng-click="callFunction()" class="aviImg">
-                    <img src="/assets/styles/aviLogo.png" width="400px" height="400px">
-
-                </div></a>
+                <h2>Click the button below to reach someone</h2>
+                <a href="#videochat"><button ng-click="callFunction()" class="btn btn-primary">Make a Call</button></a>
                 <div ng-show="kiosk && unavailable">
                     <h3>I'm sorry, there is no one available to take your call</h3>
                 </div>
                 <!--<button id="makeCall" class="btn btn-primary" ng-click="callFunction()"><a href="#videochat" ><p style="color: white;">Click here to speak with someone</p></a></button>-->
-            </div>
-            <div class="col-md-1"></div>
         </div>
 
         <div ng-show="user" class="row">
-            <div class="col-md-1"></div>
-            <div class="col-md-10">
                 <h2>You are logged in as {{option}}</h2>
                 <h3>If a call is coming in, a link will appear below, lick to answer.</h3>
                 <div ng-show="user && link" class="appendCallLink">
-                   <a href="#videochat"><button ng-click="receivingCall()">Accept Incoming Call!</button></a>
+                   <a href="#videochat"><button ng-click="receivingCall()" class="btn btn-primary">Accept Incoming Call!</button></a>
                 </div>
-                <div class="aviImg">
-                    <img src="/assets/styles/aviLogo.png" width="400px" height="400px">
 
-                </div>
-            </div>
-            <div class="col-md-1"></div>
         </div>
     </div>
-    <div ng-hide="user || kiosk" class="aviImg">
-        <img src="/assets/styles/aviLogo.png" width="400px" height="400px">
-    </div>
+
 
 
 </div>
