@@ -1,67 +1,74 @@
 var myApp = angular.module('myApp');
 
-//myApp.controller('HomeController', ['$scope','$location', function($scope,$location) {
-//    $scope.someFunction = function(){
-//        $location.path('/videochat');
-//    };
-//    console.log('lobby controller');
-//}]);
+myApp.controller('HomeController', ['$scope','$location', function($scope) {
+    console.log('home controller');
+}]);
 
-myApp.controller('LobbyController', ['$scope','ngAudio','$location','redirector', function($scope,ngAudio,$location,redirector){
-    console.log('lobby controller');
-    //Variables
-    var socket = io.connect('http://localhost:5000');
+myApp.controller('AboutController', ['$scope','$location', function($scope) {
+    console.log('about controller');
+}]);
+myApp.controller('LocationsController', ['$scope','$location', function($scope) {
+    console.log('locations controller');
+}]);
+myApp.controller('UserController', ['$scope','$location','ngAudio', function($scope,$location,ngAudio) {
+    console.log('user controller');
+    //variables
     $scope.option = '';
-    $scope.kiosk = false;
-    $scope.user = false;
-    $scope.options=['visitor', 'option1', 'option2', 'option3', 'option4', 'option5', 'option6'];
-    $scope.newArray=[];
-    $scope.loggedIn = false;
-    $scope.link = false;
-    $scope.unavailable = false;
+    $scope.options=['option1', 'option2', 'option3', 'option4', 'option5', 'option6'];
     $scope.i = 0;
+    $scope.link = false;
     $scope.answered = false;
-    $scope.whatever = redirector.wasRedirected;
-    console.log($scope.whatever);
-    //Socket Events
+    $scope.loggedIn = false;
+
+
+
+    //socket events
+    var socket = io.connect('http://localhost:5000');
+
+    socket.on('entrance', function (data) {
+        //console.log('option value at entrance' + $scope.option);
+        //if ($scope.option !== '' && $scope.answered==false){
+        //    $scope.loginFunction($scope.option);
+        //}
+    });
     socket.on('optionArray', function(data){
-        //console.log(data);
-        $scope.newArray =[];
-        $scope.newArray = data.array;
-        for(var i=0; i < $scope.options.length;i++){
-            for(var j=0; j < $scope.newArray.length; j++){
-                if ($scope.options[i] == $scope.newArray[j]){
-                    //console.log('newarray at j ' +$scope.newArray[j]);
-                    $scope.options.splice(i,1);
-                }
+        var tempArray = data.array;
+        console.log(tempArray);
+        if (tempArray.length > 0) {
+            for (var j = 0; j < tempArray.length; j++) {
+                $scope.listChecker(tempArray[j], $scope.options)
             }
         }
     });
-    socket.on('entrance', function (data) {
-        //console.log('person has entered');
+
+    socket.on('keepConnected', function(data){
+        $scope.connectionKeeper();
     });
-    socket.on('call', function (data){
-        console.log('a call has been made');
-        //var whatevs = $("<div>").css("color", "black").text(data.message);
-        //$("body").append
-    });
+
     socket.on('invite', function(data){
         console.log('you have been invited' + data.link);
+
         $scope.incomingCall();
         $scope.soundFunction();
-        //var invite = $("<div><button ng-click='receivingCall()'><a href ='#videochat'>Click here to join</a></button></div>");
-        //$("body").append(invite);
+
     });
     socket.on('accepted', function(data){
         $scope.acceptedFunction();
     });
-    socket.on('unavailable', function(data){
-        $scope.unavailable = !scope.unavailable;
-    });
+
     socket.on('exit', function (data){
-        //console.log('someone has left');
+        console.log('this id was disconnceted' + data.who);
     });
-    //Functions
+
+    //functions
+
+    $scope.loginFunction = function(option){
+        //console.log($scope.kiosk, $scope.user);
+        console.log(option);
+        $scope.loggedIn = true;
+        socket.emit('login', {option: option});
+        //console.log($scope.kiosk, $scope.user);
+    };
     $scope.soundFunction = function(){
         $scope.i++;
         $scope.audio = ngAudio.load('http://www.soundjay.com/phone/sounds/telephone-ring-03a.mp3');
@@ -77,16 +84,8 @@ myApp.controller('LobbyController', ['$scope','ngAudio','$location','redirector'
             $scope.link = false;
         }
     };
-    $scope.incomingCall = function(soundFunction){
+    $scope.incomingCall = function(){
         $scope.link = true;
-    };
-    $scope.receivingCall = function(){
-        console.log('i am taking the call');
-        socket.emit('callAccepted');
-    };
-    $scope.kioskLogin = function(){
-        $scope.getOptions();
-        $scope.kiosk = !$scope.kiosk;
     };
     $scope.acceptedFunction = function(){
         $scope.link=false;
@@ -96,38 +95,74 @@ myApp.controller('LobbyController', ['$scope','ngAudio','$location','redirector'
         socket.emit('getOptions');
     };
 
+    $scope.receivingCall = function(){
+        console.log('i am taking the call');
+        socket.emit('callAccepted', {option: $scope.option});
+    };
+
+    $scope.listChecker = function(option,array){
+        console.log(option);
+        console.log(array);
+        for (var l=0; l<array.length;l++){
+            if (option == array[l]){
+                array.splice(l,1);
+            }
+        }
+    };
+    $scope.connectionKeeper = function(){
+        console.log('keeping connection');
+        setTimeout($scope.connectionKeeper, 15000);
+    };
+
+    //functions ran on page load
+
+    $scope.getOptions();
+
+}]);
+
+
+
+myApp.controller('LobbyController', ['$scope','$location','fromKiosk', function($scope,$location,fromKiosk){
+    console.log('lobby controller');
+    //Variables
+    var socket = io.connect('http://localhost:5000');
+    $scope.unavailable = false;
+
+    console.log('option value at page login' + $scope.option);
+    //Socket Events
+
+    socket.on('call', function (data){
+        console.log('call has been made');
+    });
+
+    socket.on('unavailable', function(data){
+        $scope.unavailable = !$scope.unavailable;
+    });
+
+    //Functions
     $scope.callFunction = function(){
+        fromKiosk.fromKiosk = true;
         socket.emit('call', {call: $scope.option});
     };
-    $scope.loginFunction = function(option){
-        console.log($scope.kiosk, $scope.user);
-        console.log(option);
-        $scope.loggedIn = !$scope.loggedIn;
-        socket.emit('login', {option: option});
-        if (option == "visitor"){
-            $scope.kiosk = !$scope.kiosk;
-        } else{
-            $scope.user = !$scope.user;
-        }
-        console.log($scope.kiosk, $scope.user);
 
-
-    };
 
     //Functions ran on page load
-    $scope.getOptions();
+
 
 
 
 
 
 }]);
-myApp.controller('VideoChatController', ['$scope','$location','redirector', function($scope,$location,redirector){
+myApp.controller('VideoChatController', ['$scope','fromKiosk','$route', function($scope,fromKiosk,$route){
     var socket = io.connect('http://localhost:5000');
     //socket.on('entrance', function(data){
     //    console.log('we see the entrance here as well');
     //});
     console.log('videochat controller');
+    console.log('from kiosk indicator' + fromKiosk.fromKiosk);
+    $scope.kiosk = fromKiosk.fromKiosk;
+    console.log('scope.kiosk ' + $scope.kiosk);
     $('#remoteVideo').hide();
     $('#localVideo').hide();
 
@@ -178,18 +213,6 @@ myApp.controller('VideoChatController', ['$scope','$location','redirector', func
         }
     };
 
-
-// The following var's act as the interface between our HTML/CSS code
-// and this JS. These allow us to interact between the UI and our application
-// logic
-//    var startButton = document.getElementById("startButton");
-
-    //startButton.disabled = false;
-
-    //startButton.onclick = createConnection;
-
-//closeButton.onclick = closeDataChannels;
-
     var localVideo = document.querySelector('#localVideo');
     var remoteVideo = document.querySelector('#remoteVideo');
 
@@ -202,12 +225,24 @@ myApp.controller('VideoChatController', ['$scope','$location','redirector', func
     };
     $scope.endCall = function(){
         console.log('End Call Fired');
-        redirector.wasRedirected = true;
         socket.emit('endCall', {user: 'whatever for now'});
+        window.location.href=('#/user');
+        var tracks = localVideoStream.getTracks();
+        for (var i=0;i<tracks.length;i++){
+            tracks[i].stop();
+        };
+    };
+    $scope.sendSomething = function(){
+        socket.emit('something');
     };
 
     $scope.redirect = function(){
-        $location.path('/lobby');
+        //var tracks = localVideoStream.getTracks();
+        //for (var i=0;i<tracks.length;i++){
+        //    tracks[i].stop();
+        //};
+        console.log('redirect?');
+        window.location.href=('#/lobby');
     };
 
     $scope.createConnection = function(){
@@ -226,31 +261,6 @@ myApp.controller('VideoChatController', ['$scope','$location','redirector', func
     };
 
 
-    socket.on('chat', function(message) {
-        console.log(message);
-        $('#chat').append("<span style='color:red;padding-left: 5px;'>" + message.user + "</spna>: " + message.msg + "</br>");
-    });
-
-    $('#msg').keypress(function(e) { // text written
-
-
-        if (e.keyCode === 13) {
-            if (user === '') {
-                alert('Join Room First');
-                return false;
-            }
-            if ($('#msg').val() === '')
-                return false;
-            var msg = $('#msg').val();
-            var msgob = {
-                'user': localuser,
-                'msg': msg
-            };
-            socket.emit('chat', msgob);
-            $('#chat').append("<span style='color:green;padding-left: 5px;'>Me</spna>: " + msgob.msg + "</br>");
-            $('#msg').val('');
-        }
-    });
 
     socket.on('created', function(room) {
         console.log('Created room ' + room);
@@ -261,7 +271,13 @@ myApp.controller('VideoChatController', ['$scope','$location','redirector', func
         console.log('Room' + room + " is full.");
     });
 
-    socket.on('redirecting', function(data){
+    socket.on('redirect', function(data){
+        var tracks = localVideoStream.getTracks();
+        for (var i=0;i<tracks.length;i++){
+            tracks[i].stop();
+        };
+        console.log('bye');
+        $scope.redirect();
 
     });
 
@@ -302,7 +318,7 @@ myApp.controller('VideoChatController', ['$scope','$location','redirector', func
             });
             pc.addIceCandidate(candidate);
         } else if (message === 'bye' && isStarted) {
-            //handleRemoteHangup();
+            handleRemoteHangup();
         }
     });
 
@@ -503,15 +519,17 @@ myApp.controller('VideoChatController', ['$scope','$location','redirector', func
 
 
     function handleRemoteHangup() {
-        //  console.log('Session terminated.');
-        // stop();
-        // isInitiator = false;
+        console.log('Session terminated.');
+        stop();
+        isInitiator = false;
     }
 
 
 
 // Set Opus as the default audio codec if it's present.
     function preferOpus(sdp) {
+        console.log('does any of this happen');
+
         var sdpLines = sdp.split('\r\n');
         var mLineIndex;
         // Search for m line.
@@ -550,6 +568,8 @@ myApp.controller('VideoChatController', ['$scope','$location','redirector', func
 
 // Set the selected codec to the first in m line.
     function setDefaultCodec(mLine, payload) {
+        console.log('does any of this happen');
+
         var elements = mLine.split(' ');
         var newLine = [];
         var index = 0;
@@ -563,9 +583,10 @@ myApp.controller('VideoChatController', ['$scope','$location','redirector', func
         }
         return newLine.join(' ');
     }
-
 // Strip CN from sdp before CN constraints is ready.
     function removeCN(sdpLines, mLineIndex) {
+        console.log('does any of this happen');
+
         var mLineElements = sdpLines[mLineIndex].split(' ');
         // Scan from end for the convenience of removing an item.
         for (var i = sdpLines.length - 1; i >= 0; i--) {
@@ -588,10 +609,10 @@ myApp.controller('VideoChatController', ['$scope','$location','redirector', func
     $scope.createConnection();
 }]);
 
-myApp.factory('redirector', function(){
-    var wasRedirected = false;
+myApp.factory('fromKiosk', function(){
+    var fromKiosk = false;
 
     return {
-        wasRedirected : wasRedirected
+        fromKiosk : fromKiosk
     }
-})
+});

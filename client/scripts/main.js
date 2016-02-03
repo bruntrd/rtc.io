@@ -4,6 +4,22 @@ var appControllers= angular.module('appControllers', []);
 
 myApp.config(['$routeProvider', function($routeProvider){
     $routeProvider.
+    when('/home', {
+        templateUrl: "/assets/views/routes/home.html",
+        controller: "HomeController"
+    }).
+    when('/about', {
+        templateUrl: "/assets/views/routes/about.html",
+        controller: "AboutController"
+    }).
+    when('/locations', {
+        templateUrl: "/assets/views/routes/locations.html",
+        controller: "LocationsController"
+    }).
+    when('/user', {
+        templateUrl: "/assets/views/routes/user.html",
+        controller: "UserController"
+    }).
     when('/lobby', {
         templateUrl: "/assets/views/routes/lobby.html",
         controller: "LobbyController"
@@ -13,7 +29,7 @@ myApp.config(['$routeProvider', function($routeProvider){
         controller: "VideoChatController"
     }).
     otherwise({
-        redirectTo: "/lobby"
+        redirectTo: "/home"
     });
 
 }]);

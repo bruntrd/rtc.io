@@ -37,66 +37,102 @@ var arraySorter = function(array, string, sortAscending) {
 
 room.on('connection', function(socket){
     var optionArray = [];
+
+    //lobby Sockets
     room.sockets.emit('entrance', {message: 'welcome to the lobby'});
 
     socket.on('login', function(data){
-
+        var push =false;
         var connectedPerson = ({'option': data.option, 'id':socket.id});
-        connectedList.push(connectedPerson);
-        console.log(connectedList);
-        if(data.option =='visitor'){
-            callerId1 = socket.id;
+        console.log('person trying to login ' + connectedPerson.option, connectedPerson.id);
+        console.log(connectedList.length);
+        if (connectedList.length==0){
+            connectedList.push(connectedPerson);
+            push = true;
+        } else {
+            for (var l = 0; l < connectedList.length; l++) {
+                if (connectedPerson.option == connectedList[l].option && connectedPerson.id != connectedList[l].id) {
+                    connectedList[l].splice(l, 1);
+                    connectedList.push(connectedPerson);
+                    push = true;
+                    break;
+                }
+            }
         }
+        for (var j = 0; j<connectedList.length; j++){
+            if (connectedPerson.option == connectedList[j].option && connectedPerson.id == connectedList[j].id){
+                push = true;
+            }
+        }
+        if (push==false){
+            connectedList.push(connectedPerson);
+        }
+        room.to(socket.id).emit('keepConnected');
+
+        console.log(connectedList);
+    });
+
+    socket.on('stayConnected', function(data){
+        room.to(socket.id).emit('keepConnected');
     });
 
     socket.on('disconnect', function(){
-        room.sockets.emit('exit', {message: 'someone has left'});
+        for (var j= 0;j<connectedList.length;j++){
+            if (socket.id == connectedList[j].id){
+                //room.sockets.emit('exit', {who: connectedList[j].option});
+                connectedList.splice(j,1);
+            }
+        }
+        numClients = 0;
     });
-    socket.on('callAccepted', function(){
+    socket.on('callAccepted', function(data){
+        console.log('call accepted option ' + data.option);
+        for (var j= 0;j<connectedList.length;j++){
+            if (socket.id == connectedList[j].id){
+                //room.sockets.emit('exit', {who: connectedList[j].option});
+                connectedList.splice(j,1);
+            }
+        }
         callerId2 = socket.Id;
         room.sockets.emit('accepted');
     });
 
     socket.on('call', function (data) {
+        var id;
         round = 0;
         inCall = [];
         arraySorter(connectedList, 'option', true);
-        if (connectedList.length <=1){
-            var id= connectedList[0].id;
-            room.to(id).emit('unavailable')
+        if (connectedList.length < 1){
+            room.sockets.emit('unavailable')
         } else{
-            var id = connectedList[0].id;
-            console.log('sent');
-            room.to(id).emit('invite', {link: '#videochat'});
+            room.to(connectedList[0].id).emit('invite', {link: 'videochat'});
         }
-
-
 
     });
 
     socket.on('noAnswer', function(data){
-        arraySorter(connectedList, 'option', true);
-        console.log(data.option);
-        if(round <=2) {
-            for (var i = 0; i < connectedList.length; i++) {
-                if (data.option == connectedList[i].option) {
+
+        if(round <2) {
+            for (var j = 0; j < connectedList.length; j++) {
+                if (data.option == connectedList[j].option) {
                     var nextCall= 0;
-                    nextCall = i + 1;
+                    nextCall = j + 1;
                 }
             }
-            if (connectedList[nextCall].option == 'visitor') {
+            if (nextCall >= connectedList.length) {
                 var id = connectedList[0].id;
                 room.to(id).emit('invite', {link: "#videochat"});
-                console.log(round);
+                console.log('round before increment ' + round);
                 round++;
-                console.log(round);
+                console.log('round after increment ' +round);
             } else {
                 console.log(nextCall);
                 var id = connectedList[nextCall].id;
                 room.to(id).emit('invite', {link: '#videochat'})
             }
         }
-        else if(round>2) {
+        else if(round>=2) {
+            console.log('round is greater' + round)
             var id = connectedList[(connectedList.length-1)]
             room.to(id).emit('unavailable');
         }
@@ -104,13 +140,13 @@ room.on('connection', function(socket){
 
     socket.on('getOptions', function(){
         optionArray=[];
-        for (var j=0; j<=connectedList.length-1; j++){
+        for (var j=0; j<connectedList.length; j++){
             optionArray.push(connectedList[j].option);
         }
         socket.emit('optionArray', {array: optionArray});
     });
     
-    //video socket info
+    //video sockets
 
     socket.on('message', function(message) {
         socket.broadcast.emit('message', message);
@@ -146,12 +182,15 @@ room.on('connection', function(socket){
     });
 
     socket.on('endCall', function(data){
+        console.log(inCall.length);
         var id;
         if (socket.id == inCall[0]){
             id = inCall[1];
         } else{
             id = inCall[0];
         }
+        numClients = 0;
+
         room.to(id).emit('redirect', {whatever: 'redirecting'})
 
 

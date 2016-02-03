@@ -83,7 +83,10 @@ module.exports = function(grunt) {
                 src: [
                     "views/routes/home.html",
                     "views/routes/lobby.html",
-                    "views/routes/videochat.html"
+                    "views/routes/videochat.html",
+                    "views/routes/locations.html",
+                    "views/routes/user.html",
+                    "views/routes/about.html"
                 ],
                 dest: "server/public/assets/"
             },

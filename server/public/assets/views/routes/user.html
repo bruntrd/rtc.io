@@ -1,0 +1,61 @@
+<div class="row">
+    <div class="col-md1"></div>
+    <div class="col-md11">
+        <div class="userWelcom">
+            <h1>Thanks for coming, choose an option(order) to be called</h1>
+        </div>
+
+        <div class="row" ng-hide="loggedIn">
+            <button id="loginButton" ng-mouseover="getOptions()" ng-click="getOptions()" class="btn btn-primary allButtons" width="40px" data-toggle="modal" data-target="#loginModal">Login</button>
+            <div class="modal fade" id="loginModal" tabindex="-1" role="dialog">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <!-- Modal Header -->
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">
+                                <span aria-hidden="true">&times;</span>
+                                <span class="sr-only">Close</span>
+                            </button>
+                            <h4 class="modal-title" id="myModalLabel">Choose which option (order) you would like to be</h4>
+                        </div>
+
+                        <!-- Modal Body -->
+                        <div class="modal-body">
+
+                            <form class="form-horizontal" role="form" id="messageForm">
+                                <div class="form-group">
+                                    <label  class="col-sm-1 control-label"></label>
+                                    <div class="col-sm-9">
+                                        <div class="form-group">
+                                            <label for="sel1">Select your call option:</label>
+                                            <select class="form-control" id="sel1" ng-model="option">
+                                                <option ng-repeat="option in options">{{option}}</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <!-- Modal Footer -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">
+                                Exit Option Selecter
+                            </button>
+                            <button type="button" class="btn btn-primary" ng-click ="loginFunction(option)" data-dismiss="modal">
+                                Choose this order
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row" ng-show="loggedIn">
+            <p class="loggedIn">You are logged in as {{option}}</p>
+            <p class="callComing">If a call is coming in, a link will appear below, click to answer.</p>
+            <div ng-show="link" class="appendCallLink">
+                <a href="#videochat"><button class="btn btn-primary" ng-click="receivingCall()" class="btn btn-primary">Accept Incoming Call!</button></a>
+            </div>
+
+        </div>
+    </div>
+</div>

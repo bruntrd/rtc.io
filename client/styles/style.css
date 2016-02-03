@@ -6,19 +6,51 @@ body{
     background-size: cover;
 
 }
+@font-face{
+    font-family: gothamBold;
+    src: url('/assets/styles/fonts/Gotham-Bold.ttf');
+}
+@font-face{
+    font-family: gothamLight;
+    src: url('/assets/styles/fonts/gotham-light.ttf')
+}
 #makeCall {
     height: 100px;
 }
 
 .header {
     padding-top: 100px;
-    font-size: 36px;
+    padding-left:10px;
+    padding-right:10px;
 }
+.header p {
+    font-size:70px;
+    color: #ffffff;
+    font-family: gothamBold;
+
+}
+/*.allButtons {*/
+    /*border-radius: 10px;*/
+/*}*/
 #loginButton {
     height: 60px;
     width: 100px;
     font-size: 24px;
     margin-left:20px;
+    padding-left:10px;
+    padding-right:10px;
+    border-radius: 20px;
+}
+.loggedIn {
+    font-family: gothamBold;
+    font-size: 30px;
+    font-color: #000000;
+}
+
+.callComing {
+    font-family: gothamLight;
+    font-size: 20px;
+    font-color: #000000;
 }
 .aviImg {
     /*background: url('aviLogo.png') no-repeat center center fixed;*/
