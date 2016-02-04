@@ -2,10 +2,8 @@ var express = require('express');
 var app = express();
 var server = require('http').Server(app);
 var index = require('./routes/index');
-var Primus = require('primus.io');
 var io = require('socket.io');
 var connect = require('connect');
-var replify = require('replify');
 
 app.use('/', index);
 
@@ -45,7 +43,6 @@ room.on('connection', function(socket){
         var push =false;
         var connectedPerson = ({'option': data.option, 'id':socket.id});
         console.log('person trying to login ' + connectedPerson.option, connectedPerson.id);
-        console.log(connectedList.length);
         if (connectedList.length==0){
             connectedList.push(connectedPerson);
             push = true;
@@ -73,10 +70,12 @@ room.on('connection', function(socket){
     });
 
     socket.on('stayConnected', function(data){
-        room.to(socket.id).emit('keepConnected');
+        console.log('server staying connected');
+        setTimeout(function(){room.to(socket.id).emit('keepConnected')},20000);
     });
 
     socket.on('disconnect', function(){
+        console.log('who disconneted' + socket.id);
         for (var j= 0;j<connectedList.length;j++){
             if (socket.id == connectedList[j].id){
                 //room.sockets.emit('exit', {who: connectedList[j].option});
@@ -86,15 +85,13 @@ room.on('connection', function(socket){
         numClients = 0;
     });
     socket.on('callAccepted', function(data){
-        console.log('call accepted option ' + data.option);
         for (var j= 0;j<connectedList.length;j++){
             if (socket.id == connectedList[j].id){
                 //room.sockets.emit('exit', {who: connectedList[j].option});
                 connectedList.splice(j,1);
             }
         }
-        callerId2 = socket.Id;
-        room.sockets.emit('accepted');
+        callerId2 = socket.id;
     });
 
     socket.on('call', function (data) {
@@ -103,6 +100,7 @@ room.on('connection', function(socket){
         inCall = [];
         arraySorter(connectedList, 'option', true);
         if (connectedList.length < 1){
+            setTimeout(function(){room.sockets.emit('unavailable')}, 4000);
             room.sockets.emit('unavailable')
         } else{
             room.to(connectedList[0].id).emit('invite', {link: 'videochat'});
@@ -122,9 +120,7 @@ room.on('connection', function(socket){
             if (nextCall >= connectedList.length) {
                 var id = connectedList[0].id;
                 room.to(id).emit('invite', {link: "#videochat"});
-                console.log('round before increment ' + round);
                 round++;
-                console.log('round after increment ' +round);
             } else {
                 console.log(nextCall);
                 var id = connectedList[nextCall].id;
@@ -132,9 +128,7 @@ room.on('connection', function(socket){
             }
         }
         else if(round>=2) {
-            console.log('round is greater' + round)
-            var id = connectedList[(connectedList.length-1)]
-            room.to(id).emit('unavailable');
+            room.sockets.emit('unavailable');
         }
     });
 
@@ -161,8 +155,7 @@ room.on('connection', function(socket){
         console.log(inCall);
 
 
-        console.log(numClients);
-        console.log(receptionRoom);
+        console.log('consolelogging receptionroom arugment ' + receptionRoom);
 
         if (numClients === 0) {
             socket.join(receptionRoom);

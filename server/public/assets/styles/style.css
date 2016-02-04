@@ -17,6 +17,12 @@ body{
 #makeCall {
     height: 100px;
 }
+.yo {
+    font-family: gothamBold;
+    position: absolute;
+    left:300px;
+    top:400px;
+}
 
 .header {
     padding-top: 100px;

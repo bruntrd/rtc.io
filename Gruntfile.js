@@ -77,6 +77,12 @@ module.exports = function(grunt) {
                 src: "views/index.html",
                 dest: "server/public/assets/"
             },
+            main: {
+                expand: true,
+                cwd: "client",
+                src: "scripts/controllers/controller.js",
+                dest: "server/public/assets/"
+            },
             htmlRoutes: {
                 expand: true,
                 cwd: "client",

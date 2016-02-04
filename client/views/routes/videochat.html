@@ -2,22 +2,27 @@
 <div class="row ">
 
 
-    <div class="col-md-8" >
-        <div class="row">
+    <div class="col-md-8">
+        <div class="row main">
             <!--<img src="images/remote.png" id="remoteimg" class="img-responsive"/>-->
             <video id='remoteVideo' autoplay width="100%" class="remote"></video>
         </div>
+
     </div>
-    <div class="col-md-4 local" >
+    <div class="col-md-4 local">
         <div class="row">
             <!--<img src="images/local.png" id="localimg" class="img-responsive"/>-->
             <video id='localVideo' autoplay muted width="100%" ></video>
         </div>
         <div class="row">
-           <button class="btn btn-primary" ng-hide="kiosk" ng-click="endCall()">End Call</button>
+           <a href="#user"><button class="btn btn-primary" ng-hide="kiosk" ng-click="endCall()">End Call</button></a>
 
             <div id="chat" class="txtarea fullsz"></div>
+
             <input type="text" id="msg" placeholder="Press enter to send message" class="fullsz form-control"/>
         </div>
+    </div>
+    <div class="row" >
+        <h1 ng-show="yo">s;dads;alkfkja;lksdfj;lakdsjf;klasdjf;lkasdjf;lk!!!!!!!!!!!!!!!!!</h1>
     </div>
 </div>
