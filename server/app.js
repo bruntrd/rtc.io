@@ -1,20 +1,27 @@
+var fs= require('fs');
+var https = require('https');
+
 var express = require('express');
 var app = express();
-var server = require('http').Server(app);
+
+var options = {
+    key: fs.readFileSync('./ssl/31499481-avi9csjww1.key'),
+    cert: fs.readFileSync('./ssl/31499481-avi9csjww1.cert')
+};
+
+var server = https.createServer(options, app);
 var index = require('./routes/index');
-var io = require('socket.io');
-var connect = require('connect');
+var room = require('socket.io')(server);
 
 app.use('/', index);
 
-var port = process.env.PORT || 5000;
-// create primus ws
-//var primus = new Primus(server, { transformer: 'websockets', parser: 'JSON'});
-var room = io.listen(server);
+var port = 443;
+//var room = io.listen(server);
 var connectedList = [];
 var round;
 var callerId1;
 var callerId2;
+var tookCallOption = '';
 var numClients = 0;
 var inCall=[];
 var arraySorter = function(array, string, sortAscending) {
@@ -37,7 +44,19 @@ room.on('connection', function(socket){
     var optionArray = [];
 
     //lobby Sockets
+    console.log('connected ' + socket.id);
     room.sockets.emit('entrance', {message: 'welcome to the lobby'});
+
+    socket.on('relogIn', function(data){
+        console.log(socket.id, tookCallOption);
+        if (tookCallOption != ''){
+            room.to(socket.id).emit('tookCall', {option: tookCallOption});
+            tookCallOption = '';
+        }
+        else {
+            console.log('must be a new log in');
+        }
+    });
 
     socket.on('login', function(data){
         var push =false;
@@ -82,7 +101,15 @@ room.on('connection', function(socket){
                 connectedList.splice(j,1);
             }
         }
-        numClients = 0;
+        if (socket.id == inCall[1]){
+            console.log('in call is ' + inCall[0]);
+            room.to(inCall[0]).emit('redirect');
+            numClients = 0;
+        } else if(socket.id ==inCall[0]){
+            console.log('theKiosk has been disconnected');
+            numClients = 0;
+        }
+
     });
     socket.on('callAccepted', function(data){
         for (var j= 0;j<connectedList.length;j++){
@@ -91,6 +118,8 @@ room.on('connection', function(socket){
                 connectedList.splice(j,1);
             }
         }
+        tookCallOption = data.option;
+        console.log(tookCallOption);
         callerId2 = socket.id;
     });
 
@@ -139,7 +168,7 @@ room.on('connection', function(socket){
         }
         socket.emit('optionArray', {array: optionArray});
     });
-    
+
     //video sockets
 
     socket.on('message', function(message) {
@@ -163,6 +192,7 @@ room.on('connection', function(socket){
         } else if (numClients == 1) {
 
             room.sockets. in (receptionRoom).emit('join', receptionRoom);
+            room.sockets. in (receptionRoom).emit('sendSomething');
             socket.join(receptionRoom);
             socket.emit('joined', receptionRoom);
         } else {

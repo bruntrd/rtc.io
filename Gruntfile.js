@@ -44,15 +44,6 @@ module.exports = function(grunt) {
                 ],
                 "dest": "server/public/vendors/"
             },
-            rtc: {
-                expand: true,
-                cwd: 'node_modules',
-                src: [
-                    "rtc/dist/rtc.min.js",
-                    "rtc/dist/rtc.min.js.map"
-                ],
-                "dest": "server/public/vendors/"
-            },
             jquery: {
                 expand: true,
                 cwd: 'node_modules',
@@ -90,6 +81,7 @@ module.exports = function(grunt) {
                     "views/routes/home.html",
                     "views/routes/lobby.html",
                     "views/routes/videochat.html",
+                    "views/routes/projects.html",
                     "views/routes/locations.html",
                     "views/routes/user.html",
                     "views/routes/about.html"
@@ -104,11 +96,11 @@ module.exports = function(grunt) {
                 ],
                 "dest": "server/public/assets"
             },
-            primus: {
+            angularbootstrap: {
                 expand: true,
                 cwd: "node_modules",
                 src: [
-                    "primus/dist/primus.js"
+                    "angular-ui-bootstrap/dist/ui-bootstrap.js"
                 ],
                 "dest": "server/public/vendors/"
             },
@@ -121,16 +113,6 @@ module.exports = function(grunt) {
                     "bootstrap/dist/js/bootstrap.min.js"
                 ],
                 "dest": "server/public/vendors/"
-            },
-            ngaudio: {
-                expand: true,
-                cwd: "node_modules",
-                src: [
-                    "ng-audio/dist/ng-audio.min.js",
-                    "ng-audio/dist/css/ng-audio.min.css"
-                ],
-                "dest": "server/public/vendors/"
-
             }
         }
     });

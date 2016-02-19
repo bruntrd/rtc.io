@@ -1,4 +1,4 @@
-var myApp = angular.module('myApp', ['ngRoute', 'appControllers', 'ngAudio']);
+var myApp = angular.module('myApp', ['ngRoute', 'appControllers', 'ngAudio','ui.bootstrap' ]);
 
 var appControllers= angular.module('appControllers', []);
 
@@ -11,6 +11,10 @@ myApp.config(['$routeProvider', function($routeProvider){
     when('/about', {
         templateUrl: "/assets/views/routes/about.html",
         controller: "AboutController"
+    }).
+    when('/projects', {
+        templateUrl: "/assets/views/routes/projects.html",
+        controller: "ProjectsController"
     }).
     when('/locations', {
         templateUrl: "/assets/views/routes/locations.html",

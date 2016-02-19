@@ -11,7 +11,9 @@
   "license": "ISC",
   "dependencies": {
     "angular": "^1.4.9",
+    "angular-carousel": "^1.0.1",
     "angular-route": "^1.4.9",
+    "angular-ui-bootstrap": "^1.1.2",
     "bootstrap": "^3.3.6",
     "connect": "^3.4.1",
     "express": "^4.13.4",
@@ -20,10 +22,7 @@
     "grunt-contrib-uglify": "^0.11.0",
     "jquery": "^2.2.0",
     "ng-audio": "0.0.2",
-    "primus.io": "^3.2.0",
     "replify": "^1.2.0",
-    "rtc": "^3.3.0",
-    "rtc-switchboard": "^3.1.0",
-    "socket.io": "^1.4.4"
+    "socket.io": "^1.4.5"
   }
 }

@@ -1,16 +1,37 @@
 var myApp = angular.module('myApp');
 
-myApp.controller('HomeController', ['$scope','$location', function($scope) {
+myApp.controller('HomeController', ['$scope', function($scope) {
     console.log('home controller');
 }]);
 
-myApp.controller('AboutController', ['$scope','$location', function($scope) {
+myApp.controller('AboutController', ['$scope', function($scope) {
     console.log('about controller');
 }]);
-myApp.controller('LocationsController', ['$scope','$location', function($scope) {
-    console.log('locations controller');
+
+myApp.controller('ProjectsController', ['$scope', function($scope) {
+    console.log('projects controller');
+    $scope.myInterval = 8000;
+    $scope.slides = [
+        {
+            image: 'assets/styles/images/aviConferenceRoom.jpg'
+        },
+        {
+            image: 'assets/styles/images/aviCorona.jpg'
+        },
+        {
+            image: 'assets/styles/images/aviNetsmart.jpg'
+        },
+        {
+            image: 'assets/styles/images/aviDigitalMenu.jpeg'
+        }
+    ];
 }]);
-myApp.controller('UserController', ['$scope','$location','ngAudio','reloader','$window', function($scope,$location,ngAudio,reloader,$window) {
+
+myApp.controller('LocationsController', ['$scope', function($scope) {
+    console.log('locations controller');
+
+}]);
+myApp.controller('UserController', ['$scope','$location','ngAudio','reloader','$window','fromKiosk', function($scope,$location,ngAudio,reloader,$window,fromKiosk) {
     console.log('user controller');
     //variables
     $scope.option = '';
@@ -19,29 +40,29 @@ myApp.controller('UserController', ['$scope','$location','ngAudio','reloader','$
     $scope.link = false;
     $scope.answered = false;
     $scope.loggedIn = false;
-    $scope.reloadCount = reloader.reloader;
+    $scope.reloadCount = reloader.userReloader;
     $scope.audio = ngAudio.load('http://www.soundjay.com/phone/sounds/telephone-ring-03a.mp3');
 
 
-    console.log('reload count on page load' + $scope.reloadCount);
-    $scope.reloadFunction = function(value){
-        if (value == 1){
-            $window.location.reload();
-        } else {
-            console.log('didnt run');
-        }
-        reloader.vreloader = 0;
-    };
 
-    $scope.reloadFunction($scope.reloadCount);
+
+    console.log('reload count on page load' + $scope.reloadCount);
+
+
+
     //socket events
-    var socket = io.connect('http://localhost:5000');
+    var socket = io.connect('https://AVI9CSJWW1', {secure: true});
 
     socket.on('entrance', function (data) {
         //console.log('option value at entrance' + $scope.option);
         //if ($scope.option !== '' && $scope.answered==false){
         //    $scope.loginFunction($scope.option);
         //}
+    });
+    socket.on('tookCall', function(data){
+        console.log(data.option);
+        $scope.option = data.option;
+        $scope.loginFunction(data.option);
     });
     socket.on('optionArray', function(data){
         $scope.options=['option1', 'option2', 'option3', 'option4', 'option5', 'option6'];
@@ -56,7 +77,7 @@ myApp.controller('UserController', ['$scope','$location','ngAudio','reloader','$
 
     socket.on('keepConnected', function(data){
         console.log('keeping connection');
-        setTimeout(function(){socket.emit('stayConnected')},20000);
+        setTimeout(function(){socket.emit('stayConnected')},30000);
     });
 
     socket.on('invite', function(data){
@@ -73,6 +94,18 @@ myApp.controller('UserController', ['$scope','$location','ngAudio','reloader','$
     });
 
     //functions
+    $scope.reloadFunction = function(value){
+        if (value == 1){
+            console.log('reloading route');
+            $window.location.reload();
+        } else {
+            console.log('didnt run');
+        }
+        reloader.userReloader = 0;
+    };
+    $scope.relogIn = function(){
+        socket.emit('relogIn');
+    };
 
     $scope.loginFunction = function(option){
         //console.log($scope.kiosk, $scope.user);
@@ -81,8 +114,10 @@ myApp.controller('UserController', ['$scope','$location','ngAudio','reloader','$
         socket.emit('login', {option: option});
     };
     $scope.soundFunction = function(){
-        $scope.i++;
-        $scope.audio.play();
+        if ($scope.answered == false){
+            $scope.audio.play();
+            $scope.i++;
+        }
         console.log('ring ' + $scope.i);
         if ($scope.i < 4 && $scope.answered == false){
             setTimeout($scope.soundFunction, 6000);
@@ -104,7 +139,9 @@ myApp.controller('UserController', ['$scope','$location','ngAudio','reloader','$
     $scope.receivingCall = function(){
         $scope.link = false;
         $scope.answered = true;
-        reloader.reloader = 1;
+        fromKiosk.fromKiosk = false;
+        reloader.userReloader = 1;
+        reloader.lobbyReloader = 1;
         console.log('i am taking the call');
         socket.emit('callAccepted', {option: $scope.option});
     };
@@ -123,32 +160,35 @@ myApp.controller('UserController', ['$scope','$location','ngAudio','reloader','$
     };
 
     //functions ran on page load
-
+    $scope.reloadFunction($scope.reloadCount);
+    $scope.relogIn();
     $scope.getOptions();
+
 
 }]);
 
 
 
-myApp.controller('LobbyController', ['$scope','$location','fromKiosk','reloader','$window', function($scope,$location,fromKiosk,reloader,$window){
+myApp.controller('LobbyController', ['$scope','$location','fromKiosk','reloader','$window','$route', function($scope,$location,fromKiosk,reloader,$window,$route){
     console.log('lobby controller');
     //Variables
-    var socket = io.connect('http://localhost:5000');
+    var socket = io.connect('https://AVI9CSJWW1', {secure: true});
     $scope.yo = false;
-    $scope.reloadCount = reloader.reloader;
+    $scope.reloadCount = reloader.lobbyReloader;
+
 
     console.log('reload count on page load' + $scope.reloadCount);
     $scope.reloadFunction = function(value){
         if (value == 1){
+            console.log('reloading route');
             $window.location.reload();
         } else {
             console.log('didnt run');
         }
-        reloader.reloader = 0;
+        reloader.lobbyReloader = 0;
     };
-
     $scope.reloadFunction($scope.reloadCount);
-    console.log('option value at page login' + $scope.option);
+
     //Socket Events
 
     socket.on('call', function (data){
@@ -157,8 +197,10 @@ myApp.controller('LobbyController', ['$scope','$location','fromKiosk','reloader'
 
     //Functions
     $scope.callFunction = function(){
-        reloader.reloader = 1;
+        //reloader.reloader = 1;
         fromKiosk.fromKiosk = true;
+        reloader.lobbyReloader = 1;
+        console.log(fromKiosk.fromKiosk, reloader.lobbyReloader);
         socket.emit('call', {call: $scope.option});
     };
 
@@ -175,11 +217,12 @@ myApp.controller('VideoChatController', ['$scope','fromKiosk','$route', 'reloade
 
     //$route.reload();
     console.log('videochat controller');
-    console.log('from kiosk indicator' + fromKiosk.fromKiosk);
+    console.log('from kiosk indicator ' + fromKiosk.fromKiosk);
 
     $scope.kiosk = fromKiosk.fromKiosk;
-    $scope.yo = false;
-    console.log('scope.kiosk ' + $scope.kiosk);
+    $scope.unavailable = false;
+    $scope.counter = 0;
+
     $('#remoteVideo').hide();
     $('#localVideo').hide();
     var div;
@@ -191,22 +234,15 @@ myApp.controller('VideoChatController', ['$scope','fromKiosk','$route', 'reloade
     var isInitiator = false;
     var isStarted = false;
 
-    var localVideoStream;
-    var remoteVideoStream;
-    var pc;
+    $scope.localVideoStream;
+    $scope.remoteVideoStream;
+
+
 
     var isFirefox = false;
-
     var dataChannel;
-
     var turnReady;
-// var pc_config;
-// window.turnserversDotComAPI.iceServers(function(data) {
-//    pc_config = {
-//  'iceServers': data
-// };
-// console.log(data);
-// });
+
 //Ice Servers Added
     var pc_config = {
         'iceServers': [{
@@ -214,14 +250,6 @@ myApp.controller('VideoChatController', ['$scope','fromKiosk','$route', 'reloade
         }]
     };
 
-// pc_constraints is not currently used, but the below would allow us to enforce
-// DTLS keying for SRTP rather than SDES ... which is becoming the default soon
-// anyway.
-    var pc_constraints = {
-        'optional': [{
-            'DtlsSrtpKeyAgreement': true
-        }]
-    };
 
 // Set up audio and video regardless of what devices are present.
     var sdpConstraints = {
@@ -234,85 +262,77 @@ myApp.controller('VideoChatController', ['$scope','fromKiosk','$route', 'reloade
     var localVideo = document.querySelector('#localVideo');
     var remoteVideo = document.querySelector('#remoteVideo');
 
-    var room = location.pathname.substring(1);
-    var user = location.pathname.substring(2);
-    var socket = io.connect();
+    $scope.room;
+
+    var socket = io.connect('https://AVI9CSJWW1', {secure: true});
 
     var constraints = {
         audio: true,
         video: true
     };
     $scope.endCall = function(){
+        var tracks = $scope.localVideoStream.getTracks();
+        for (var i=0;i<tracks.length;i++) {
+            tracks[i].stop();
+        }
+        $scope.pc.close();
+        reloader.lobbyReloader = 1;
+        reloader.userReloader = 1;
         socket.emit('endCall', {user: 'whatever for now'});
-        reloader.reloader = 1;
-        //var tracks = localVideoStream.getTracks();
-        //for (var i=0;i<tracks.length;i++){
-        //    tracks[i].stop();
-        //}
+        window.location.href=('#/user');
 
-    };
-    $scope.sendSomething = function(){
-        socket.emit('something');
-    };
-
-    $scope.redirect = function(){
-        //var tracks = localVideoStream.getTracks();
-        //for (var i=0;i<tracks.length;i++){
-        //    tracks[i].stop();
-        //}
-        //
-        reloader.reloader = 1;
-        $window.location.href=('#/lobby');
     };
 
     $scope.createConnection = function(){
 
-            user = 'kiosk';
-            room = '1';
-            socket.emit('create or join', room);
-
-            navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
-            navigator.getUserMedia(constraints, handleUserMedia, handleUserMediaError);
-            if(navigator.mozGetUserMedia) {
-                isFirefox = true;
-            }
-            if (location.hostname != "localhost") {
-                    requestTurn('https://computeengineondemand.appspot.com/turn?username=41784574&key=4080218913');
-            }
+        $scope.room = '1';
+        socket.emit('create or join', $scope.room);
+        navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+        navigator.getUserMedia(constraints, handleUserMedia, handleUserMediaError);
+        if(navigator.mozGetUserMedia) {
+            isFirefox = true;
+        }
+        if (location.hostname != "localhost") {
+            requestTurn('https://computeengineondemand.appspot.com/turn?username=41784574&key=4080218913');
+        }
     };
-
-
 
     socket.on('created', function(room) {
         console.log('Created room ' + room);
         isInitiator = true;
-        div = '<h1 class="yo">Thanks for calling, were just waiting for someone to pick up!</h1>';
-        $('.main').append(div);
     });
 
     socket.on('full', function(room) {
         console.log('Room' + room + " is full.");
+        $scope.yo=false
     });
 
     socket.on('redirect', function(data){
-        var tracks = localVideoStream.getTracks();
+        var tracks = $scope.localVideoStream.getTracks();
         for (var i=0;i<tracks.length;i++){
             tracks[i].stop();
         }
+        //$scope.pc.removeStream($scope.localVideoStream);
+        //$scope.pc.removeStream($scope.remoteVideoStream);
+        $scope.pc.close();
+        reloader.lobbyReloader = 1;
         console.log('bye');
-        $scope.redirect();
+        window.location.href=('#/home');
+
 
     });
 
     socket.on('unavailable', function(data){
-        div = "<h1 class='yo'>Sorry no one is there</h1>";
-        $('.main').append(div);
+        console.log('this aint happening');
+        $scope.$apply(function(){
+            $scope.kiosk=false;
+            $scope.unavailable = true;
+            console.log($scope.unavailable);
+        });
 
-        reloader.reloader = 1;
-        setTimeout(function(){$window.location.href=('/#lobby')}, 13000);
+        reloader.lobbyReloader = 1;
+        setTimeout(function(){$window.location.href=('/#lobby')}, 8000);
     });
-
-
 
     socket.on('join', function(room) {
         console.log('Another peer made a request to join room ' + room);
@@ -324,7 +344,12 @@ myApp.controller('VideoChatController', ['$scope','fromKiosk','$route', 'reloade
         console.log('Room ' + room + ' Successsfully joined.');
         isChannelReady = true;
     });
-
+    socket.on('sendSomething', function(data){
+        console.log('sendSomething');
+        $scope.$apply(function(){
+            $scope.kiosk = false;
+        });
+    });
 
 
     function sendMessage(message) {
@@ -338,27 +363,25 @@ myApp.controller('VideoChatController', ['$scope','fromKiosk','$route', 'reloade
             if (!isInitiator && !isStarted) {
                 maybeStart();
             }
-            pc.setRemoteDescription(new getSessionDescription(message));
-            doAnswer();
+            $scope.pc.setRemoteDescription(new getSessionDescription(message));
+            if ($scope.counter <1) {
+                doAnswer();
+            }
         } else if (message.type === 'answer' && isStarted) {
-            pc.setRemoteDescription(new getSessionDescription(message));
+            $scope.pc.setRemoteDescription(new getSessionDescription(message));
         } else if (message.type === 'candidate' && isStarted) {
             var candidate = getIceCandidate({
                 sdpMLineIndex: message.label,
                 candidate: message.candidate
             });
-            pc.addIceCandidate(candidate);
+            $scope.pc.addIceCandidate(candidate);
         } else if (message === 'bye' && isStarted) {
             handleRemoteHangup();
         }
-    });
 
-////////////////////////////////////////////////////
-// This next section is where we deal with setting
-// up the actual components of the communication
-// we are interested in using. Starting with the
-// video streams
-////////////////////////////////////////////////////
+
+    });
+//set up video streams
 
     function trace(text) {
         console.log((performance.now() / 1000).toFixed(3) + ": " + text);
@@ -368,7 +391,7 @@ myApp.controller('VideoChatController', ['$scope','fromKiosk','$route', 'reloade
 
         console.log('Adding local stream.');
         localVideo.src = window.URL.createObjectURL(stream);
-        localVideoStream = stream;
+        $scope.localVideoStream = stream;
         sendMessage('Got user media');
         $('#localimg').hide();
         $('#localVideo').show();
@@ -382,9 +405,9 @@ myApp.controller('VideoChatController', ['$scope','fromKiosk','$route', 'reloade
     }
 
     function maybeStart() {
-        if (!isStarted && typeof localVideoStream != 'undefined' && isChannelReady) {
+        if (!isStarted && typeof $scope.localVideoStream != 'undefined' && isChannelReady) {
             createPeerConnection();
-            pc.addStream(localVideoStream);
+            $scope.pc.addStream($scope.localVideoStream);
             // Add data channels
             //createDataConnection();
             isStarted = true;
@@ -401,26 +424,21 @@ myApp.controller('VideoChatController', ['$scope','fromKiosk','$route', 'reloade
 
 
 
-/////////////////////////////////////////////////////////
-// Next we setup the data channel between us and the far
-// peer. This is bi-directional, so we use the same
-// connection to send/recv data. However its modal in that
-// one end of the connection needs to kick things off,
-// so there is logic that varies based on if the JS
-// script is acting as the initator or the far end.
-/////////////////////////////////////////////////////////
+//setup channel
 
     function createPeerConnection() {
         try {
             var servers = null;
-            pc = new getRTCPeerConnection(servers, {
+            $scope.pc = new getRTCPeerConnection(servers, {
                 optional: [{
                     RtpDataChannels: true
                 }]
             });
-            pc.onicecandidate = handleIceCandidate;
-            pc.onaddstream = handleRemoteStreamAdded;
-            //pc.onremovestream = handleRemoteStreamRemoved;
+            console.log('socket message createPeerConnection begginning ' +$scope.pc.signalingState);
+
+            $scope.pc.onicecandidate = handleIceCandidate;
+            $scope.pc.onaddstream = handleRemoteStreamAdded;
+            $scope.pc.onremovestream = handleRemoteStreamRemoved;
 
         } catch (e) {
             console.log('Failed to create PeerConnection, exception: ' + e.message);
@@ -472,11 +490,11 @@ myApp.controller('VideoChatController', ['$scope','fromKiosk','$route', 'reloade
         }
     }
 
-    function handleRemoteStreamAdded(event) {
-        console.log('Remote stream added.');
-        remoteVideo.src = window.URL.createObjectURL(event.stream);
-        remoteVideoStream = event.stream;
-    }
+    //function handleRemoteStreamAdded(event) {
+    //    console.log('Remote stream added.');
+    //    remoteVideo.src = window.URL.createObjectURL(event.stream);
+    //    $scope.remoteVideoStream = event.stream;
+    //}
 
     function handleCreateOfferError(event) {
         console.log('createOffer() error: ', e);
@@ -484,23 +502,29 @@ myApp.controller('VideoChatController', ['$scope','fromKiosk','$route', 'reloade
 
     function doCall() {
         console.log('Sending offer to peer');
-        pc.createOffer(setLocalAndSendMessage, handleCreateOfferError);
+        $scope.pc.createOffer(setLocalAndSendMessage, handleCreateOfferError);
     }
 
     function doAnswer() {
+        console.log('begginning of do answer' + $scope.counter);
+        //if ($scope.counter < 1){
         console.log('Sending answer to peer.');
-        if(isFirefox) {
-            pc.createAnswer(setLocalAndSendMessage, handleCreateAnswerError, sdpConstraints);
-        }
-        else {
-            pc.createAnswer(setLocalAndSendMessage, null, sdpConstraints);
-        }
+            if(isFirefox) {
+                $scope.pc.createAnswer(setLocalAndSendMessage, handleCreateAnswerError, sdpConstraints);
+            }
+            else {
+                $scope.pc.createAnswer(setLocalAndSendMessage, null, sdpConstraints);
+
+            }
+        $scope.counter++;
+        console.log('end of do answer' + $scope.counter);
+
     }
 
     function setLocalAndSendMessage(sessionDescription) {
         // Set Opus as the preferred codec in SDP if Opus is present.
-        sessionDescription.sdp = preferOpus(sessionDescription.sdp);
-        pc.setLocalDescription(sessionDescription);
+        //sessionDescription.sdp = preferOpus(sessionDescription.sdp);
+        $scope.pc.setLocalDescription(sessionDescription);
         sendMessage(sessionDescription);
     }
 
@@ -540,7 +564,7 @@ myApp.controller('VideoChatController', ['$scope','fromKiosk','$route', 'reloade
     function handleRemoteStreamAdded(event) {
         console.log('Remote stream added.');
         remoteVideo.src = window.URL.createObjectURL(event.stream);
-        remoteVideoStream = event.stream;
+        $scope.remoteVideoStream = event.stream;
     }
 
     function handleRemoteStreamRemoved(event) {
@@ -549,94 +573,13 @@ myApp.controller('VideoChatController', ['$scope','fromKiosk','$route', 'reloade
 
 
 
-    //function handleRemoteHangup() {
-    //    console.log('Session terminated.');
-    //    stop();
-    //    isInitiator = false;
-    //    $scope.redirect();
-    //}
-
-
-
-// Set Opus as the default audio codec if it's present.
-    function preferOpus(sdp) {
-        console.log('does any of this happen');
-
-        var sdpLines = sdp.split('\r\n');
-        var mLineIndex;
-        // Search for m line.
-        for (var i = 0; i < sdpLines.length; i++) {
-            if (sdpLines[i].search('m=audio') !== -1) {
-                mLineIndex = i;
-                break;
-            }
-        }
-        if (mLineIndex === null) {
-            return sdp;
-        }
-
-        // If Opus is available, set it as the default in m line.
-        for (i = 0; i < sdpLines.length; i++) {
-            if (sdpLines[i].search('opus/48000') !== -1) {
-                var opusPayload = extractSdp(sdpLines[i], /:(\d+) opus\/48000/i);
-                if (opusPayload) {
-                    sdpLines[mLineIndex] = setDefaultCodec(sdpLines[mLineIndex], opusPayload);
-                }
-                break;
-            }
-        }
-
-        // Remove CN in m line and sdp.
-        sdpLines = removeCN(sdpLines, mLineIndex);
-
-        sdp = sdpLines.join('\r\n');
-        return sdp;
+    function handleRemoteHangup() {
+        console.log('Session terminated.');
+        //stop();
+        isInitiator = false;
+        //$scope.redirect();
     }
 
-    function extractSdp(sdpLine, pattern) {
-        var result = sdpLine.match(pattern);
-        return result && result.length === 2 ? result[1] : null;
-    }
-
-// Set the selected codec to the first in m line.
-    function setDefaultCodec(mLine, payload) {
-        console.log('does any of this happen');
-
-        var elements = mLine.split(' ');
-        var newLine = [];
-        var index = 0;
-        for (var i = 0; i < elements.length; i++) {
-            if (index === 3) { // Format of media starts from the fourth.
-                newLine[index++] = payload; // Put target payload to the first.
-            }
-            if (elements[i] !== payload) {
-                newLine[index++] = elements[i];
-            }
-        }
-        return newLine.join(' ');
-    }
-// Strip CN from sdp before CN constraints is ready.
-    function removeCN(sdpLines, mLineIndex) {
-        console.log('does any of this happen');
-
-        var mLineElements = sdpLines[mLineIndex].split(' ');
-        // Scan from end for the convenience of removing an item.
-        for (var i = sdpLines.length - 1; i >= 0; i--) {
-            var payload = extractSdp(sdpLines[i], /a=rtpmap:(\d+) CN\/\d+/i);
-            if (payload) {
-                var cnPos = mLineElements.indexOf(payload);
-                if (cnPos !== -1) {
-                    // Remove CN payload from m line.
-                    mLineElements.splice(cnPos, 1);
-                }
-                // Remove CN line in sdp
-                sdpLines.splice(i, 1);
-            }
-        }
-
-        sdpLines[mLineIndex] = mLineElements.join(' ');
-        return sdpLines;
-    }
 
     $scope.createConnection();
 }]);
@@ -650,9 +593,11 @@ myApp.factory('fromKiosk', function(){
 });
 
 myApp.factory('reloader', function(){
-    var reloader = 0;
+    var userReloader;
+    var lobbyReloader;
 
     return {
-        reloader : reloader
+        reloader : userReloader,
+        reloader : lobbyReloader
     }
 });

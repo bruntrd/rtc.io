@@ -2,11 +2,21 @@
     <div>
         <img class="aviImg" src="assets/styles/images/newAvi.png">
     </div>
-    <div id="locations">
-            <h2 style="text-align: center; font-family:gothamBold">AVI Locations</h2>
-            <img id="map" src="/assets/styles/images/avilocations_map.png"/>
-
-
+    <div id="projects">
+        <div class="projectCarousel">
+            <div id ="slides_control">
+                <div>
+                    <carousel interval = 'myInterval'>
+                        <slide ng-repeat = 'slide in slides' active ='slide.active'>
+                            <img class='carousel' ng-src="{{slide.image}}">
+                            <div class="carousel-caption">
+                                <!--<h4>Slide {{$index+1}}</h4>-->
+                            </div>
+                        </slide>
+                    </carousel>
+                </div>
+            </div>
+        </div>
     </div>
     <div id="navBar">
     </div>

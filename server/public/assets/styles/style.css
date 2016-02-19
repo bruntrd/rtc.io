@@ -1,3 +1,12 @@
+html, body{
+    width:1920px;
+    heigh:1080px;
+    margin:0;
+    padding:0;
+    overflow: hidden;
+    user-select: none;
+}
+
 body{
     background: url('BackgroundOption1.png') no-repeat center center fixed;
     -webkit-background-size: cover;
@@ -14,30 +23,229 @@ body{
     font-family: gothamLight;
     src: url('/assets/styles/fonts/gotham-light.ttf')
 }
+
+.waiting {
+    font-family: gothamLight;
+    position:absolute;
+    top: 300px;
+    left:400px;
+    font-size:40px
+}
+.nope {
+    font-family: gothamLight;
+    position: absolute;
+    top: 300px;
+    left:400px;
+    font-size:40px;
+}
+.aviImg {
+    height: 280px;
+    width: 280px;
+    position: absolute;
+    top:20px;
+    left:20px;
+    z-index: 100;
+}
+.homeLink {
+    position: absolute;
+    top: 920px;
+    left: 1800px;
+}
+#homeIcon {
+    height: 70px;
+    width: 70px;
+}
+
 #makeCall {
     height: 100px;
 }
-.yo {
+/*nav bar*/
+
+a.links:hover {
+    text-decoration: none;
+}
+.linkName {
+    padding-top:20px;
+    color: white;
+}
+
+.navList {
+    list-style: none;
+}
+.navButtons {
+    background: url('images/vrButton.png');
+    margin-top: 60px;
+    height: 102px;
+    width: 449px;
+    opacity: 1;
+    z-index: 10;
+    font-family: gothamBold;
+    color:white;
+    font-size: 40px;
+    text-align: center;
+    vertical-length: 31px;
+}
+.navButtons p {
+    font-family: gothamBold;
+    color:white;
+    font-size: 40px;
+    text-align: center;
+    vertical-align: middle;
+}
+.icons {
+    position: absolute;
+    top: 186px;
+    right: 20px;
+}
+#navBar {
+    position: absolute;
+    background-color: white;
+    opacity: .6;
+    top: 0px;
+    right: 0px;
+    height: 1080px;
+    width: 500px;
+}
+
+
+/*home page*/
+
+.welcome{
+    width: 800px;
+    position: absolute;
+    top: 400px;
+    left: 400px;
+}
+.welcomeHeader {
+    font-family: gothamBold;
+    font-size: 60px;
+    color: white;
+
+
+}
+/*about page*/
+
+#about {
+    font-family: gothamBold;
+    background-color: white;
+    position: absolute;
+    width: 1420px;
+    height: 680px;
+    top: 200px;
+    left:0px;
+}
+
+#aboutContent {
+    height: 680px;
+    width: 1410px;
+    background-color:white;
+    padding-bottom: 20px;
+
+    padding-right:20px;
+    padding-left:100px;
+    overflow-y: scroll;
+    font-family: gothamLight;
+    font-size: 18px
+}
+#aboutContent::-webkit-scrollbar-track
+{
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    border-radius: 10px;
+    background-color: #F5F5F5;
+}
+
+#aboutContent::-webkit-scrollbar
+{
+    width: 12px;
+    background-color: #F5F5F5;
+}
+
+#aboutContent::-webkit-scrollbar-thumb
+{
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+    background-color: #555;
+}
+
+/*locations page*/
+
+#locations {
+    font-family: gothamBold;
+    background-color: white;
+    position: absolute;
+    width: 1420px;
+    height: 680px;
+    top: 200px;
+    left:0px;
+}
+
+#map{
+    height:640px;
+    width: 100%;
+}
+
+
+/*projects page*/
+#projects {
+    font-family: gothamBold;
+    background-color: white;
+    position: absolute;
+    width: 1420px;
+    height: 680px;
+    top: 200px;
+    left:0px;
+}
+
+.projectCarousel{
+    height: 680px;
+    /*padding: 20px 0px 20px 0px;*/
+    font-family: gothamLight;
+    font-size: 18px
+}
+
+.carousel {
+    width:1420px;
+    height:680px;
+    overflow: hidden;
+}
+
+/*lobby page*/
+
+
+#about {
+    font-family: gothamBold;
+    background-color: white;
+    position: absolute;
+    width: 1420px;
+    height: 680px;
+    top: 200px;
+    left:0px;
+}
+
+#videoChat {
+    background: url('images/vrButton.png');
+    position: absolute;
+    top: 479px;
+    left: 486px;
+    height: 102px;
+    width: 449px;
+    opacity: 1;
+    font-family: gothamBold;
+    color:white;
+    font-size: 40px;
+    text-align: center;
+    vertical-length: 31px;
+
+}
+.waiting {
     font-family: gothamBold;
     position: absolute;
     left:300px;
     top:400px;
 }
 
-.header {
-    padding-top: 100px;
-    padding-left:10px;
-    padding-right:10px;
-}
-.header p {
-    font-size:70px;
-    color: #ffffff;
-    font-family: gothamBold;
+/*user page*/
 
-}
-/*.allButtons {*/
-    /*border-radius: 10px;*/
-/*}*/
 #loginButton {
     height: 60px;
     width: 100px;
@@ -45,8 +253,41 @@ body{
     margin-left:20px;
     padding-left:10px;
     padding-right:10px;
-    border-radius: 20px;
+    border-radius: 40px;
 }
+
+#accepting {
+    height: 60px;
+    width: 450px;
+    font-size: 40px;
+    margin-left:20px;
+    padding-left:10px;
+    padding-right:10px;
+    border-radius: 40px;
+
+}
+
+
+.userAvi {
+    height: 280px;
+    width: 280px;
+    top:20px;
+    left:20px;
+}
+.userText {
+    font-family:gothamBold;
+    font-size: 40px;
+    padding-left:10px;
+    padding-top:60px;
+    overflow-wrap: normal;
+}
+.callComing{
+    font-family:gothamLight;
+    font-soze:30px;
+    padding-left:15px;
+    padding-top:20px;
+}
+
 .loggedIn {
     font-family: gothamBold;
     font-size: 30px;
@@ -58,24 +299,26 @@ body{
     font-size: 20px;
     font-color: #000000;
 }
-.aviImg {
-    /*background: url('aviLogo.png') no-repeat center center fixed;*/
-    /*background-size: cover;*/
-    position: fixed;
-    top: 50%;
-    bottom: 50%;
-    left: 50%;
-    right: 50%;
+
+
+
+/*video css*/
+
+#endCall {
+    background: url('images/vrButton.png');
+    position: absolute;
+    top: 600px;
+    left: 600px;
+    height: 102px;
+    width: 449px;
+    opacity: 1;
+    font-family: gothamBold;
+    color:white;
+    font-size: 40px;
+    text-align: center;
+    vertical-length: 31px;
 }
-/*#l-video{*/
 
-/*}*/
-/*#r-video{*/
-/*}*/
-
-/*.local{*/
-    /*padding-bottom:20px;*/
-/*}*/
 .container {
     width: 100%;
 }

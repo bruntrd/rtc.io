@@ -1,15 +1,39 @@
-<div class="row">
-    <div class="col-md-1"></div>
-    <div class="col-md-11">
-        <div class="header">
-            <p>Welcome to AVI's Virtual Receptionist</p>
-            <div ng-hide="kiosk || loggedIn">
-                <p>Click below to make a call</p>
-                <a href="#videochat"><button ng-click="callFunction()" class="btn btn-primary">Make a Call</button></a>
-            </div>
+<div class="container">
+    <div>
+        <img class="aviImg" src="assets/styles/images/newAvi.png">
+    </div>
+    <div id="lobby">
+        <div class="receptionist">
+            <!--<p>Welcome to AVI's Virtual Receptionist</p>-->
+            <!--<div ng-hide="kiosk || loggedIn">-->
+                <!---->
+                <!--<p>Click below to make a call</p>-->
+                <!--<a href="#videochat"><button ng-click="callFunction()" class="btn btn-primary">Make a Call</button></a>-->
+            <!--</div>-->
+            <a id="videoChat" class="links" href="#videochat" ng-click="callFunction()"><p class="linkName">Start Video Chat</p></a>
         </div>
     </div>
-
+    <div id="navBar">
+    </div>
+    <div class="icons">
+        <ul class="navList">
+            <a class="links" href="#projects"><li class="navButtons">
+                <p class="linkName">AVI Projects</p>
+            </li></a>
+            <a class="links" href="#about"><li class="navButtons">
+                <p class="linkName">About AVI</p>
+            </li></a>
+            <a class="links" href="#locations"><li class="navButtons">
+                <p class="linkName">AVI Locations</p>
+            </li></a>
+            <a class="links" href="#lobby"><li class="navButtons">
+                <p class="linkName">Virtual Receptionist</p>
+            </li></a>
+        </ul>
+    </div>
+    <div class="homeLink">
+        <a href="#home"><img id="homeIcon" src="assets/styles/images/home-icon.png"></a>
+    </div>
 
 
 </div>
